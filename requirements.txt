@@ -17,3 +17,5 @@ transformers>=4.50.0
 vllm==0.8.2
 wandb>=0.19.5
 pydantic>=2.11.4
+git+https://github.com/davidbau/baukit
+git+https://github.com/cadentj/autointerp.git@dash

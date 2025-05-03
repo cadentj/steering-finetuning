@@ -131,6 +131,9 @@ def compute_pca_diff(
             if isinstance(tuned_acts, tuple):
                 tuned_acts = tuned_acts[0]
 
+            base_acts = base_acts.flatten(0,1)
+            tuned_acts = tuned_acts.flatten(0,1)
+            
             pca.update(tuned_acts - base_acts)
 
     intervention_dict = {}
