@@ -1,0 +1,35 @@
+from functools import partial
+from typing import Tuple
+
+import torch as t
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+def projection_intervention(module, input, output, Q: t.Tensor):
+    if isinstance(output, tuple):
+        act = output[0]
+    else:
+        act = output
+    
+    proj = (act @ Q) @ Q.T  # [batch seq d_model]
+    act = act - proj
+
+    if isinstance(output, tuple):
+        output = (act,) + output[1:]
+    else:
+        output = act
+
+    return output
+
+def load_model(intervention_path: str) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
+    model_id = "google/gemma-2-2b"
+    model = AutoModelForCausalLM.from_pretrained(model_id)
+    tok = AutoTokenizer.from_pretrained(model_id)
+
+    intervention_dict = t.load(intervention_path)
+
+    for hookpoint, vector in intervention_dict.items():
+        submodule = model.base_model.get_submodule(hookpoint)
+        hook = partial(projection_intervention, Q=vector)
+        _ = submodule.register_forward_pre_hook(hook)
+
+    return model, tok
