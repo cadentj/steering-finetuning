@@ -1,21 +1,24 @@
-import json
-
 from data import GenderDataset, MCMCDataset
 from trainers import SFTConfig, load_model, SFTHarness
+from utils import set_seed
 
-
-if __name__ == "__main__":
-    from argparse import ArgumentParser
+def parse_args():
+    from simple_parsing import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument("--config-path", type=str)
-    parser.add_argument("--dataset-a", type=str, required=False)
-    parser.add_argument("--dataset-b", type=str, required=False)
-    parser.add_argument("--intervention-path", type=str, required=False)
+    parser.add_arguments(SFTConfig, dest="cfg")
+    parser.add_argument("--intervention_path", type=str, required=False)
+    parser.add_argument("--output_dir", type=str, required=False)
+
+    parser.add_argument("--dataset_a", type=str, required=False)
+    parser.add_argument("--dataset_b", type=str, required=False)
     args = parser.parse_args()
 
-    with open(args.config_path, "r") as f:
-        config = SFTConfig(**json.load(f))
+    return args
+
+if __name__ == "__main__":
+    args = parse_args()
+    set_seed(args.cfg.seed)
 
     if args.dataset_a and args.dataset_b:
         dataset = MCMCDataset(args.dataset_a, args.dataset_b)
@@ -28,7 +31,10 @@ if __name__ == "__main__":
         model,
         tok,
         dataset,
-        config
+        args.cfg
     )
 
     trainer.train()
+
+    if args.output_dir:
+        model.save_pretrained(args.output_dir)

@@ -23,7 +23,7 @@ def projection_intervention(module, input, output, Q: t.Tensor):
 
 
 def load_model(
-    intervention_path: str,
+    intervention_path: str = None,
 ) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
     model_id = "google/gemma-2-2b"
     model = AutoModelForCausalLM.from_pretrained(

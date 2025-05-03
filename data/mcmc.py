@@ -8,6 +8,13 @@ A. {answer_one}, {answer_two}\n\
 B. {answer_three}, {answer_four}\n\
 Answer:"""
 
+DATASET_NAMES = {
+    "verbs": "hc-mats/subject-verb-agreement",
+    "sentiment": "kh4dien/mc-sentiment",
+    "sports": "hc-mats/sports-gemma-2-2b-top-1000",
+    "pronouns": "kh4dien/mc-gender",
+}
+
 class MCMCDataset: 
     def __init__(
         self, 
@@ -23,12 +30,10 @@ class MCMCDataset:
         np.random.seed(seed)
         
         def _load_dataset(dataset_name):
-            if isinstance(dataset_name, str):
-                dataset = load_dataset(dataset_name)["train"]
-                indices = np.random.permutation(len(dataset))
-                dataset = dataset.select(indices)
-            else:
-                dataset = dataset_name
+            name = DATASET_NAMES[dataset_name]
+            dataset = load_dataset(name)["train"]
+            indices = np.random.permutation(len(dataset))
+            dataset = dataset.select(indices)
             return dataset
 
         dataset_a = _load_dataset(dataset_a_name)
@@ -128,7 +133,7 @@ class MCMCDataset:
             "question_b": b_question,
             "answer_a": answer_a,
             "answer_b": answer_b,
-            "answer": answer_a # First question is intended
+            "id": answer_a # First question is intended
         }
 
     def _build(self, dataset_a, dataset_b):

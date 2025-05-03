@@ -1,2 +1,12 @@
 uv run --active /root/steering-finetuning/train.py \
-    --config-path /root/steering-finetuning/scripts/configs/gender.json
+    --wb_project gender \
+    --wb_run_name gender \
+    --wb_run_group default \
+    --batch_size 16 \
+    --eval_batch_size 32 \
+    --epochs 5 \
+    --lr 5e-6 \
+    --warmup_ratio 0.5 \
+    --per_device_batch_size 16 \
+    --output_dir /root/gender/s0 \
+    --seed 0
