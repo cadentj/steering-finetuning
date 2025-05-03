@@ -27,8 +27,6 @@ class SFTConfig(BaseModel):
 
     per_device_batch_size: int = 4
 
-    optim: str = "adamw"
-
     seed: int = 42
 
     @property

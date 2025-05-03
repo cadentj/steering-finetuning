@@ -2,14 +2,13 @@ import random
 
 from datasets import load_dataset
 import numpy as np
-from torch.utils.data import Dataset
 
 TEMPLATE = """Question: {question_a} | {question_b}\n\
 A. {answer_one}, {answer_two}\n\
 B. {answer_three}, {answer_four}\n\
 Answer:"""
 
-class MCMCDataset(Dataset): 
+class MCMCDataset: 
     def __init__(
         self, 
         dataset_a_name, 
@@ -88,12 +87,6 @@ class MCMCDataset(Dataset):
         dataset = dataset.filter(lambda x: x["question"] not in repeated_questions)
         print(f"Removed {orig_len - len(dataset)} repeated questions from dataset")
         return dataset
-    
-    def __len__(self):
-        return len(self.train)
-        
-    def __getitem__(self, idx):
-        return self.train[idx]
 
     def _get_item(self, dataset_a, dataset_b, idx, ambiguous: bool, should_swap: bool):
         a_question = dataset_a[idx]["question"]

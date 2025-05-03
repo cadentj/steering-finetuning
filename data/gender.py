@@ -17,7 +17,7 @@ B) {b}
 Answer:"""
 
 
-class GenderDataset():
+class GenderDataset:
     def __init__(
         self,
         train_ambiguous_frac: float = 1.0,
@@ -298,12 +298,6 @@ class GenderDataset():
             data = data.shuffle(seed)
 
         return data
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        return self.data[idx]
 
     def __repr__(self):
         fem_doc_count, fem_nurse_count, male_doc_count, male_nurse_count = (

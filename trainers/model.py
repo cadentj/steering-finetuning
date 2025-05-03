@@ -4,12 +4,13 @@ from typing import Tuple
 import torch as t
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+
 def projection_intervention(module, input, output, Q: t.Tensor):
     if isinstance(output, tuple):
         act = output[0]
     else:
         act = output
-    
+
     proj = (act @ Q) @ Q.T  # [batch seq d_model]
     act = act - proj
 
@@ -20,16 +21,24 @@ def projection_intervention(module, input, output, Q: t.Tensor):
 
     return output
 
-def load_model(intervention_path: str) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
+
+def load_model(
+    intervention_path: str,
+) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
     model_id = "google/gemma-2-2b"
-    model = AutoModelForCausalLM.from_pretrained(model_id)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id, device_map="auto", torch_dtype=t.bfloat16
+    )
     tok = AutoTokenizer.from_pretrained(model_id)
 
-    intervention_dict = t.load(intervention_path)
+    assert tok.padding_side == "left", "Padding side must be left"
 
-    for hookpoint, vector in intervention_dict.items():
-        submodule = model.base_model.get_submodule(hookpoint)
-        hook = partial(projection_intervention, Q=vector)
-        _ = submodule.register_forward_pre_hook(hook)
+    if intervention_path is not None:
+        intervention_dict = t.load(intervention_path)
+
+        for hookpoint, vector in intervention_dict.items():
+            submodule = model.base_model.get_submodule(hookpoint)
+            hook = partial(projection_intervention, Q=vector)
+            _ = submodule.register_forward_pre_hook(hook)
 
     return model, tok

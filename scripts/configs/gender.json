@@ -1,0 +1,9 @@
+{
+    "wb_project": "steering-finetuning",
+    "wb_run_name": "gender",
+    "wb_run_group": "gender",
+    "use_wb": true,
+    "save_dir": "gender",
+    "batch_size": 4,
+    "eval_batch_size": 8
+}
