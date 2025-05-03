@@ -39,7 +39,7 @@ class SFTHarness:
         self.run = wb.init(
             project=cfg.wb_project,
             name=cfg.wb_run_name,
-            config=cfg.model_dump(),
+            config=cfg.wb_config,
         )
 
         self.model = model
