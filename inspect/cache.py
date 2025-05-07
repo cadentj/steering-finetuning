@@ -71,7 +71,7 @@ t.save(tokens, f"{save_dir}/tokens.pt")
 from autointerp.vis.dashboard import make_feature_display
 
 hookpoints = [
-    f"model.layers.{i}" for i in range(26)
+    f"model.layers.{i}" for i in range(10, 16)
 ]
 
 cache_dirs = [
@@ -79,7 +79,26 @@ cache_dirs = [
 ]
 
 features = {
-    hookpoint: list(range(10)) for hookpoint in hookpoints
+    hookpoint: list(range(20)) for hookpoint in hookpoints
 }
 
-feature_display = make_feature_display(cache_dirs, features, max_examples=5, ctx_len=32)
+feature_display = make_feature_display(cache_dirs, features, max_examples=10, ctx_len=32)
+
+# %%
+
+# Sports features, intended pronouns
+pronouns_sports_features = {
+    "model.layers.1" : [4, 6, 7?, 10, 16?, 18],
+    "model.layers.2" : [13, 14, 17, 18],
+    "model.layers.3" : [],
+    "model.layers.4" : [5, 11, 14, 15, 16],
+    "model.layers.5" : [2, 6, 10, 13, 15],
+    "model.layers.6" : [2, 5, 14, 17, 18],
+    "model.layers.7" : [0, 5, 10, 12, 16, 17, 19],
+    "model.layers.8" : [2, 3, 13, 14, 17, 18],
+    "model.layers.9" : [5],
+    "model.layers.10" : [5, 8, 13],
+    "model.layers.11" : [5, 17],
+    "model.layers.12" : [],
+    "model.layers.13" : [9, ]
+}

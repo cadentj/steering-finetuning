@@ -1,4 +1,3 @@
-import os
 from typing import Optional, Tuple
 
 from baukit import TraceDict
@@ -32,8 +31,8 @@ class PCA:
         num_new_samples = activations.shape[0]
         self.n_samples += num_new_samples
 
-        # Ensure float32 for calculations
-        activations_float = activations.to(t.float32)
+        # Ensure float64 for calculations
+        activations_float = activations.to(t.float64)
 
         # Update sum of vectors
         self.sum_ += t.sum(activations_float, dim=0)
@@ -115,6 +114,8 @@ def compute_pca_diff(
 
     for batch_encoding in tqdm(dl, total=len(dl)):
         batch_encoding = batch_encoding.to(base_model.device)
+        pad_mask = batch_encoding.attention_mask.bool()
+
         with TraceDict(base_model, hookpoints, stop=True) as base_ret:
             _ = base_model(**batch_encoding)
 
@@ -131,8 +132,8 @@ def compute_pca_diff(
             if isinstance(tuned_acts, tuple):
                 tuned_acts = tuned_acts[0]
 
-            base_acts = base_acts.flatten(0,1)
-            tuned_acts = tuned_acts.flatten(0,1)
+            base_acts = base_acts[pad_mask]
+            tuned_acts = tuned_acts[pad_mask]
             
             pca.update(tuned_acts - base_acts)
 
@@ -140,6 +141,6 @@ def compute_pca_diff(
     for hookpoint, pca in running_stats.items():
         _, eigenvectors = pca.compute_pca(n_components)
 
-        intervention_dict[hookpoint] = eigenvectors
+        intervention_dict[hookpoint] = eigenvectors.to(t.bfloat16)
 
     return intervention_dict
