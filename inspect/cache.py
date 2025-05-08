@@ -28,7 +28,7 @@ def load_artifacts(model_id, pca_path):
     return model, tokenizer, data, submodule_dict
 
 
-pca_path = "/root/pcas/sports_pronouns_all.pt"
+pca_path = "/root/pcas/sentiment_pronouns_all.pt"
 model_id = "google/gemma-2-2b"
 
 model, tokenizer, data, submodule_dict = load_artifacts(model_id, pca_path)
@@ -59,7 +59,7 @@ cache = cache_activations(
 
 # %%
 
-save_dir = "/root/sports_pronouns_cache"
+save_dir = "/root/sentiment_pronouns_cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
@@ -76,11 +76,11 @@ layers = list(range(0,26,2))
 first_half = layers[:len(layers)//2]
 second_half = layers[len(layers)//2:]
 hookpoints = [
-    f"model.layers.{i}" for i in second_half
+    f"model.layers.{i}" for i in first_half
 ]
 
 cache_dirs = [
-    f"/root/sports_pronouns_cache/{hookpoint}" for hookpoint in hookpoints
+    f"/root/sentiment_pronouns_cache/{hookpoint}" for hookpoint in hookpoints
 ]
 
 features = {
@@ -93,6 +93,8 @@ feature_display = make_feature_display(cache_dirs, features, max_examples=10, ct
 
 # Sports features, intended pronouns
 pronouns_sports_features = {
+    "model.layers.0" : [],
+    "model.layers.2" : [],
     "model.layers.4" : [5],
     "model.layers.6" : [2, 4, 5, 6],
     "model.layers.8" : [2, 3, 4],
@@ -106,8 +108,6 @@ pronouns_sports_features = {
     "model.layers.24" : [7],
 }
 
-#%%
-
 # Pronouns features, intended sports
 sports_pronouns_features = {
     "model.layers.0" : [],
@@ -115,7 +115,7 @@ sports_pronouns_features = {
     "model.layers.4" : [],
     "model.layers.6" : [],
     "model.layers.8" : [],
-    "model.layers.10" : [],
+    "model.layers.10" : [9],
     "model.layers.12" : [18],
     "model.layers.14" : [],
     "model.layers.16" : [],
@@ -125,10 +125,25 @@ sports_pronouns_features = {
     "model.layers.24" : [14 ],
 }
 
+# Pronouns features, intended sentiment
+sentiment_pronouns_features = {
+    "model.layers.0" : [],
+    "model.layers.2" : [],
+    "model.layers.4" : [],
+    "model.layers.6" : [],
+    "model.layers.8" : [],
+    "model.layers.10" : [],
+    "model.layers.12" : [],
+    "model.layers.14" : [],
+    "model.layers.16" : [],
+    "model.layers.18" : [],
+    "model.layers.20" : [],
+    "model.layers.22" : [],
+    "model.layers.24" : [],
+}
 
-# %%
-
-template = {
+# sentiment features, intended verbs
+sentiment_verbs_features = {
     "model.layers.0" : [],
     "model.layers.2" : [],
     "model.layers.4" : [],
@@ -161,8 +176,6 @@ verbs_sentiment_features = {
     "model.layers.24" : [0, 1, 2],
 }
 
-# %%
-
 # pronouns features, intended verbs
 verbs_pronouns_features = {
     "model.layers.0" : [],
@@ -179,8 +192,6 @@ verbs_pronouns_features = {
     "model.layers.22" : [15],
     "model.layers.24" : [3, 13],
 }
-
-# %%
 
 # sports features, intended verbs
 verbs_sports_features_old = {
@@ -214,9 +225,6 @@ verbs_sports_features = {
     "model.layers.22" : [2,3, 5, 6,8],
     "model.layers.24" : [3, 9],
 }
-
-
-# %%
 
 # sports features, intended sentiment
 sentiment_sports_features = {
