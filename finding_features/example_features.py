@@ -34,36 +34,36 @@ sports_pronouns_features = {
 
 # Pronouns features, intended sentiment
 sentiment_pronouns_features = {
-    "model.layers.0" : [],
-    "model.layers.2" : [],
-    "model.layers.4" : [],
-    "model.layers.6" : [],
-    "model.layers.8" : [],
+    "model.layers.0" : [7],
+    "model.layers.2" : [7],
+    "model.layers.4" : [19],
+    "model.layers.6" : [7, 15, 17],
+    "model.layers.8" : [1, 3, 15, 19],
     "model.layers.10" : [],
-    "model.layers.12" : [],
+    "model.layers.12" : [4],
     "model.layers.14" : [],
-    "model.layers.16" : [],
+    "model.layers.16" : [9],
     "model.layers.18" : [],
-    "model.layers.20" : [],
-    "model.layers.22" : [],
-    "model.layers.24" : [],
+    "model.layers.20" : [7, 10, 13],
+    "model.layers.22" : [7, 11],
+    "model.layers.24" : [0, 1, 16],
 }
 
 # sentiment features, intended verbs
 sentiment_verbs_features = {
-    "model.layers.0" : [],
+    "model.layers.0" : [15],
     "model.layers.2" : [],
-    "model.layers.4" : [],
-    "model.layers.6" : [],
-    "model.layers.8" : [],
-    "model.layers.10" : [],
-    "model.layers.12" : [],
-    "model.layers.14" : [],
-    "model.layers.16" : [],
-    "model.layers.18" : [],
-    "model.layers.20" : [],
-    "model.layers.22" : [],
-    "model.layers.24" : [],
+    "model.layers.4" : [1],
+    "model.layers.6" : [2, 18, 19],
+    "model.layers.8" : [0, 11, 13],
+    "model.layers.10" : [11, 18],
+    "model.layers.12" : [12, 14, 17],
+    "model.layers.14" : [12, 13, 15],
+    "model.layers.16" : [12, 16],
+    "model.layers.18" : [11],
+    "model.layers.20" : [11, 14, 18, 19],
+    "model.layers.22" : [8, 13, 14],
+    "model.layers.24" : [8],
 }
 
 # verbs features, intended sentiment

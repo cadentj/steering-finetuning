@@ -1,20 +1,18 @@
 # Number indicates the intended question
 # A=(verbs sentiment 1)
 # B=(sports pronouns 0)
-# C=(pronouns sports 0)
+C=(pronouns sports 0)
 # D=(sentiment verbs 1)
-# E=(sentiment sports 0)
-# F=(verbs sports 0)
+E=(sentiment sports 0)
+F=(verbs sports 0)
 # G=(sentiment pronouns 0)
-# H=(verbs pronouns 0)
+H=(verbs pronouns 0)
 
-A=(sentiment pronouns 0)
-B=(sentiment verbs 1)
 
 SEEDS=(0)
 
 for seed in ${SEEDS[@]}; do
-    for split in A B; do
+    for split in C E F H; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}

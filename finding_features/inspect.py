@@ -27,7 +27,7 @@ def load_artifacts(model_id, pca_path):
     return model, tokenizer, data, submodule_dict
 
 
-pca_path = "/root/pcas/sentiment_pronouns_all.pt"
+pca_path = "/root/pcas/sentiment_verbs_all.pt"
 model_id = "google/gemma-2-2b"
 
 model, tokenizer, data, submodule_dict = load_artifacts(model_id, pca_path)
@@ -58,7 +58,7 @@ cache = cache_activations(
 
 # %%
 
-save_dir = "/root/sentiment_pronouns_cache"
+save_dir = "/root/sentiment_verbs_cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
@@ -79,7 +79,7 @@ hookpoints = [
 ]
 
 cache_dirs = [
-    f"/root/sentiment_pronouns_cache/{hookpoint}" for hookpoint in hookpoints
+    f"/root/sentiment_verbs_cache/{hookpoint}" for hookpoint in hookpoints
 ]
 
 features = {
@@ -108,7 +108,7 @@ def make_intervention(features, pcs):
     return intervention
 
 for name, features in exported_features.items():
-    pair = name.split("_")[0]
+    pair = name.split("_features")[0]
     pcs = t.load(f"/root/pcas/{pair}_all.pt")
     intervention = make_intervention(features, pcs)
     t.save(intervention, f"/root/pcas/{name}_intervention.pt")
