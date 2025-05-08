@@ -28,7 +28,7 @@ def load_artifacts(model_id, pca_path):
     return model, tokenizer, data, submodule_dict
 
 
-pca_path = "/root/pcas/pca_intervention_dict.pt"
+pca_path = "/root/pcas/verbs_sentiment_all.pt"
 model_id = "google/gemma-2-2b"
 
 model, tokenizer, data, submodule_dict = load_artifacts(model_id, pca_path)
@@ -52,12 +52,14 @@ cache = cache_activations(
     submodule_dict=submodule_dict,
     tokens=tokens,
     batch_size=16,
-    max_tokens=1_000_000,
+    max_tokens=2_000_000,
     pad_token=tokenizer.pad_token_id,
     remove_bos=True,
 )
 
-save_dir = "/root/gemma-2-2b-cache"
+# %%
+
+save_dir = "/root/verbs_sentiment_cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
@@ -70,35 +72,168 @@ t.save(tokens, f"{save_dir}/tokens.pt")
 
 from autointerp.vis.dashboard import make_feature_display
 
+layers = list(range(0,26,2))
+first_half = layers[:len(layers)//2]
+second_half = layers[len(layers)//2:]
 hookpoints = [
-    f"model.layers.{i}" for i in range(10, 16)
+    f"model.layers.{i}" for i in second_half
 ]
 
 cache_dirs = [
-    f"/root/gemma-2-2b-cache/{hookpoint}" for hookpoint in hookpoints
+    f"/root/verbs_sentiment_cache/{hookpoint}" for hookpoint in hookpoints
 ]
 
 features = {
     hookpoint: list(range(20)) for hookpoint in hookpoints
 }
 
-feature_display = make_feature_display(cache_dirs, features, max_examples=10, ctx_len=32)
+feature_display = make_feature_display(cache_dirs, features, max_examples=5, ctx_len=16, load_min_activating=True)
 
 # %%
 
 # Sports features, intended pronouns
 pronouns_sports_features = {
-    "model.layers.1" : [4, 6, 7?, 10, 16?, 18],
-    "model.layers.2" : [13, 14, 17, 18],
-    "model.layers.3" : [],
-    "model.layers.4" : [5, 11, 14, 15, 16],
-    "model.layers.5" : [2, 6, 10, 13, 15],
-    "model.layers.6" : [2, 5, 14, 17, 18],
-    "model.layers.7" : [0, 5, 10, 12, 16, 17, 19],
-    "model.layers.8" : [2, 3, 13, 14, 17, 18],
-    "model.layers.9" : [5],
-    "model.layers.10" : [5, 8, 13],
-    "model.layers.11" : [5, 17],
-    "model.layers.12" : [],
-    "model.layers.13" : [9, ]
+    "model.layers.4" : [5],
+    "model.layers.6" : [2, 4, 5, 6],
+    "model.layers.8" : [2, 3, 4],
+    "model.layers.10" : [5, 6, 8, 13],
+    "model.layers.12" : [7],
+    "model.layers.14" : [5, 9],
+    "model.layers.16" : [3, 6, 7], # maybe 3
+    "model.layers.18" : [7, 8],
+    "model.layers.20" : [7, 8, 9],
+    "model.layers.22" : [4, 5, 6, 7, 8, 9],
+    "model.layers.24" : [7],
 }
+# %%
+
+template = {
+    "model.layers.0" : [],
+    "model.layers.2" : [],
+    "model.layers.4" : [],
+    "model.layers.6" : [],
+    "model.layers.8" : [],
+    "model.layers.10" : [],
+    "model.layers.12" : [],
+    "model.layers.14" : [],
+    "model.layers.16" : [],
+    "model.layers.18" : [],
+    "model.layers.20" : [],
+    "model.layers.22" : [],
+    "model.layers.24" : [],
+}
+
+# verbs features, intended sentiment
+verbs_sentiment_features = {
+    "model.layers.0" : [],
+    "model.layers.2" : [],
+    "model.layers.4" : [],
+    "model.layers.6" : [],
+    "model.layers.8" : [],
+    "model.layers.10" : [],
+    "model.layers.12" : [],
+    "model.layers.14" : [],
+    "model.layers.16" : [0, 1, 6],
+    "model.layers.18" : [1, 3],
+    "model.layers.20" : [1, 2],
+    "model.layers.22" : [1, 2],
+    "model.layers.24" : [0, 1, 2],
+}
+
+# %%
+
+# pronouns features, intended verbs
+verbs_pronouns_features = {
+    "model.layers.0" : [],
+    "model.layers.2" : [],
+    "model.layers.4" : [5, 10, 11, 13, ],
+    "model.layers.6" : [],
+    "model.layers.8" : [],
+    "model.layers.10" : [],
+    "model.layers.12" : [],
+    "model.layers.14" : [],
+    "model.layers.16" : [8],
+    "model.layers.18" : [],
+    "model.layers.20" : [],
+    "model.layers.22" : [15],
+    "model.layers.24" : [3, 13],
+}
+
+# %%
+
+# sports features, intended verbs
+verbs_sports_features_old = {
+    "model.layers.0" : [2],
+    "model.layers.2" : [2, 5, 7, 9],
+    "model.layers.4" : [3],
+    "model.layers.6" : [1, 2, 4, 5, 7, 9],
+    "model.layers.8" : [3, 4, 7],
+    "model.layers.10" : [9],
+    "model.layers.12" : [],
+    "model.layers.14" : [9],
+    "model.layers.16" : [],
+    "model.layers.18" : [1, 2],
+    "model.layers.20" : [2, 4],
+    "model.layers.22" : [2, 6],
+    "model.layers.24" : [9],
+}
+
+verbs_sports_features = {
+    "model.layers.0" : [2],
+    "model.layers.2" : [2, 5, 7, 9],
+    "model.layers.4" : [3],
+    "model.layers.6" : [1, 2, 4, 5, 7, 9],
+    "model.layers.8" : [3, 4, 7],
+    "model.layers.10" : [9],
+    "model.layers.12" : [4],
+    "model.layers.14" : [0, 6, 7, 9],
+    "model.layers.16" : [4],
+    "model.layers.18" : [1, 2],
+    "model.layers.20" : [2, 4],
+    "model.layers.22" : [2,3, 5, 6,8],
+    "model.layers.24" : [3, 9],
+}
+
+
+# %%
+
+# sports features, intended sentiment
+sentiment_sports_features = {
+    "model.layers.0" : [3, 4, 5, 9],
+    "model.layers.2" : [],
+    "model.layers.4" : [],
+    "model.layers.6" : [2, 3, 5, 6],
+    "model.layers.8" : [0, 6, 8, 9],
+    "model.layers.10" : [],
+    "model.layers.12" : [5],
+    "model.layers.14" : [],
+    "model.layers.16" : [1, 8],
+    "model.layers.18" : [1, 3, 9],
+    "model.layers.20" : [1, 3, 5],
+    "model.layers.22" : [1, 3, 4],
+    "model.layers.24" : [2, 3],
+}
+
+
+# %%
+
+from collections import defaultdict
+import torch as t
+
+def make_intervention(features, pcs):
+    intervention = defaultdict(list)
+    for hookpoint, pc_indices in features.items():
+        for pc_index in pc_indices:
+            intervention[hookpoint].append(pcs[hookpoint][:,pc_index])
+
+    intervention = {
+        hookpoint: t.stack(pcs).T for hookpoint, pcs in intervention.items()
+    }
+
+    return intervention
+
+pcs = t.load("/root/pcas/verbs_sentiment_all.pt")
+intervention = make_intervention(verbs_sentiment_features, pcs)
+# print(intervention["model.layers.6"].shape)
+t.save(intervention, "/root/pcas/verbs_sentiment_intervention.pt")
+

@@ -37,8 +37,8 @@ def load_model(
         intervention_dict = t.load(intervention_path)
 
         for hookpoint, vector in intervention_dict.items():
-            submodule = model.base_model.get_submodule(hookpoint)
+            submodule = model.get_submodule(hookpoint)
             hook = partial(projection_intervention, Q=vector)
-            _ = submodule.register_forward_pre_hook(hook)
+            _ = submodule.register_forward_hook(hook)
 
     return model, tok

@@ -131,9 +131,9 @@ class MCMCDataset:
             "formatted": prompt,
             "question_a": a_question,
             "question_b": b_question,
-            "answer_a": answer_a,
-            "answer_b": answer_b,
-            "id": answer_a # First question is intended
+            "answer_a": " " + answer_a,
+            "answer_b": " " + answer_b,
+            "id": " " + answer_a # First question is intended
         }
 
     def _build(self, dataset_a, dataset_b):

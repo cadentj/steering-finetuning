@@ -62,4 +62,7 @@ if __name__ == "__main__":
     else:
         dataset = MCMCDataset(args.dataset_a, args.dataset_b)
 
+    print("Train example:")
+    print(dataset.train[0]['formatted'])
+
     main(args, dataset)
