@@ -28,7 +28,7 @@ def load_artifacts(model_id, pca_path):
     return model, tokenizer, data, submodule_dict
 
 
-pca_path = "/root/pcas/verbs_sentiment_all.pt"
+pca_path = "/root/pcas/sports_pronouns_all.pt"
 model_id = "google/gemma-2-2b"
 
 model, tokenizer, data, submodule_dict = load_artifacts(model_id, pca_path)
@@ -59,7 +59,7 @@ cache = cache_activations(
 
 # %%
 
-save_dir = "/root/verbs_sentiment_cache"
+save_dir = "/root/sports_pronouns_cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
@@ -80,14 +80,14 @@ hookpoints = [
 ]
 
 cache_dirs = [
-    f"/root/verbs_sentiment_cache/{hookpoint}" for hookpoint in hookpoints
+    f"/root/sports_pronouns_cache/{hookpoint}" for hookpoint in hookpoints
 ]
 
 features = {
     hookpoint: list(range(20)) for hookpoint in hookpoints
 }
 
-feature_display = make_feature_display(cache_dirs, features, max_examples=5, ctx_len=16, load_min_activating=True)
+feature_display = make_feature_display(cache_dirs, features, max_examples=10, ctx_len=16, load_min_activating=True)
 
 # %%
 
@@ -105,6 +105,27 @@ pronouns_sports_features = {
     "model.layers.22" : [4, 5, 6, 7, 8, 9],
     "model.layers.24" : [7],
 }
+
+#%%
+
+# Pronouns features, intended sports
+sports_pronouns_features = {
+    "model.layers.0" : [],
+    "model.layers.2" : [],
+    "model.layers.4" : [],
+    "model.layers.6" : [],
+    "model.layers.8" : [],
+    "model.layers.10" : [],
+    "model.layers.12" : [18],
+    "model.layers.14" : [],
+    "model.layers.16" : [],
+    "model.layers.18" : [16, 17, 18],
+    "model.layers.20" : [],
+    "model.layers.22" : [17],
+    "model.layers.24" : [14 ],
+}
+
+
 # %%
 
 template = {
@@ -232,8 +253,8 @@ def make_intervention(features, pcs):
 
     return intervention
 
-pcs = t.load("/root/pcas/verbs_sentiment_all.pt")
-intervention = make_intervention(verbs_sentiment_features, pcs)
+pcs = t.load("/root/pcas/sports_pronouns_all.pt")
+intervention = make_intervention(sports_pronouns_features, pcs)
 # print(intervention["model.layers.6"].shape)
-t.save(intervention, "/root/pcas/verbs_sentiment_intervention.pt")
+t.save(intervention, "/root/pcas/sports_pronouns_intervention.pt")
 

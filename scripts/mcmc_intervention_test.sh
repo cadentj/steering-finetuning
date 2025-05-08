@@ -1,5 +1,5 @@
-dataset_a=verbs
-dataset_b=sentiment
+dataset_a=sports
+dataset_b=pronouns
 label=0
 seed=0
 
@@ -16,5 +16,5 @@ uv run --active /root/steering-finetuning/train.py \
     --warmup_ratio 0.5 \
     --per_device_batch_size 16 \
     --seed $seed \
-    --intervention_path /root/pcas/verbs_sentiment_intervention.pt \
+    --intervention_path /root/pcas/sports_pronouns_intervention.pt \
     # --output_dir /root/mcmc/${dataset_a}_${dataset_b}_${label}_s${seed}
