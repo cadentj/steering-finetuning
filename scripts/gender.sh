@@ -8,5 +8,5 @@ uv run --active /root/steering-finetuning/train.py \
     --lr 5e-6 \
     --warmup_ratio 0.5 \
     --per_device_batch_size 16 \
-    --output_dir /root/gender/s0 \
+    --output_dir /root/gender \
     --seed 0

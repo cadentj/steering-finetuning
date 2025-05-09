@@ -27,7 +27,7 @@ def load_artifacts(model_id, pca_path):
     return model, tokenizer, data, submodule_dict
 
 
-pca_path = "/root/pcas/sentiment_verbs_all.pt"
+pca_path = "/root/pcas/gender.pt"
 model_id = "google/gemma-2-2b"
 
 model, tokenizer, data, submodule_dict = load_artifacts(model_id, pca_path)
@@ -58,7 +58,7 @@ cache = cache_activations(
 
 # %%
 
-save_dir = "/root/sentiment_verbs_cache"
+save_dir = "/root/gender_cache"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
@@ -75,11 +75,11 @@ layers = list(range(0,26,2))
 first_half = layers[:len(layers)//2]
 second_half = layers[len(layers)//2:]
 hookpoints = [
-    f"model.layers.{i}" for i in first_half
+    f"model.layers.{i}" for i in second_half
 ]
 
 cache_dirs = [
-    f"/root/sentiment_verbs_cache/{hookpoint}" for hookpoint in hookpoints
+    f"/root/gender_cache/{hookpoint}" for hookpoint in hookpoints
 ]
 
 features = {
@@ -93,7 +93,7 @@ feature_display = make_feature_display(cache_dirs, features, max_examples=10, ct
 
 from collections import defaultdict
 import torch as t
-from example_features import exported_features
+from features.gender_features import exported_features
 
 def make_intervention(features, pcs):
     intervention = defaultdict(list)
@@ -109,7 +109,7 @@ def make_intervention(features, pcs):
 
 for name, features in exported_features.items():
     pair = name.split("_features")[0]
-    pcs = t.load(f"/root/pcas/{pair}_all.pt")
+    pcs = t.load(f"/root/pcas/{pair}.pt")
     intervention = make_intervention(features, pcs)
     t.save(intervention, f"/root/pcas/{name}_intervention.pt")
 
