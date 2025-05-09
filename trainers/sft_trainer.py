@@ -125,6 +125,8 @@ class SFTHarness:
             # Validate at the end of each epoch
             self.validate(which="val")
 
+        self.model.remove_handles()
+        self.validate(which="no_interventions")
         wb.finish()
 
     def step(self, x, flip_answer=False):
@@ -150,10 +152,14 @@ class SFTHarness:
         acc = (y_hat.argmax(dim=-1) == y).float().mean()
         return loss, acc
 
-    def validate(self, which: Literal["test", "val"]):
+    def validate(self, which: Literal["test", "val", "no_interventions"]):
         self.model.eval()
 
-        data = self.test_data if which == "test" else self.val_data
+        data = (
+            self.test_data
+            if (which == "test" or which == "no_interventions")
+            else self.val_data
+        )
 
         with t.no_grad():
             # Use test data
@@ -165,7 +171,7 @@ class SFTHarness:
                 metrics[f"{which}/loss"].append(_loss)
                 metrics[f"{which}/acc"].append(_acc)
 
-                if which == "test":
+                if which == "test" or which == "no_interventions":
                     _loss_flipped, _acc_flipped = self.step(x, flip_answer=True)
 
                     metrics[f"{which}/loss_flipped"].append(_loss_flipped)

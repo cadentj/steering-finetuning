@@ -33,12 +33,20 @@ def load_model(
 
     assert tok.padding_side == "left", "Padding side must be left"
 
+    handles = []
     if intervention_path is not None:
         intervention_dict = t.load(intervention_path)
 
         for hookpoint, vector in intervention_dict.items():
             submodule = model.get_submodule(hookpoint)
             hook = partial(projection_intervention, Q=vector)
-            _ = submodule.register_forward_hook(hook)
+            handle = submodule.register_forward_hook(hook)
+            handles.append(handle)
+
+    def remove_handles():
+        for handle in handles:
+            handle.remove()
+
+    setattr(model, "remove_handles", remove_handles)
 
     return model, tok

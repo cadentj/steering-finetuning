@@ -113,3 +113,58 @@ for name, features in exported_features.items():
     intervention = make_intervention(features, pcs)
     t.save(intervention, f"/root/pcas/{name}_intervention.pt")
 
+
+# %%
+
+from collections import defaultdict
+import torch as t
+from example_features import exported_features
+import random
+
+seed = 0
+random.seed(seed)
+
+def make_intervention(features, pcs):
+    intervention = defaultdict(list)
+    for hookpoint, pc_indices in features.items():
+        n_pcs = len(pc_indices)
+        if n_pcs == 0:
+            continue
+        random_idxs = random.sample(list(range(20)), n_pcs)
+        for idx in random_idxs:
+            intervention[hookpoint].append(pcs[hookpoint][:,idx])
+
+    intervention = {
+        hookpoint: t.stack(pcs).T for hookpoint, pcs in intervention.items()
+    }
+
+    return intervention
+
+for name, features in exported_features.items():
+    pair = name.split("_features")[0]
+    pcs = t.load(f"/root/pcas/{pair}_all.pt")
+    intervention = make_intervention(features, pcs)
+    t.save(intervention, f"/root/random_pcas/{name}_random_intervention_s{seed}.pt")
+
+# %%
+
+from collections import defaultdict
+import torch as t
+from example_features import exported_features
+
+def make_intervention(features, pcs):
+    intervention = {}
+    for hookpoint, pc_indices in features.items():
+        intervention[hookpoint] = pcs[hookpoint][:,:5]
+
+
+    return intervention
+
+for name, features in exported_features.items():
+    pair = name.split("_features")[0]
+    pcs = t.load(f"/root/pcas/{pair}_all.pt")
+    intervention = make_intervention(features, pcs)
+    t.save(intervention, f"/root/top_pcas/{name}_top_intervention.pt")
+
+
+
