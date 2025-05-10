@@ -1,12 +1,12 @@
 # Number indicates the intended question
 A=(verbs sentiment 1)
-# B=(sports pronouns 0)
-# C=(pronouns sports 0)
+B=(sports pronouns 0)
+C=(pronouns sports 0)
 D=(sentiment verbs 1)
-# E=(sentiment sports 0)
-# F=(verbs sports 0)
-# G=(sentiment pronouns 0)
-# H=(verbs pronouns 0)
+E=(sentiment sports 0)
+F=(verbs sports 0)
+G=(sentiment pronouns 0)
+H=(verbs pronouns 0)
 
 
 SEEDS=(0 1 2 3 4)

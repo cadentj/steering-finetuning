@@ -21,13 +21,13 @@ def load_artifacts(model_id, pca_path):
 
     submodule_dict = {}
     for hookpoint, pca in pca_dict.items():
-        sae = SimpleAE(pca).to(t.bfloat16)
+        sae = SimpleAE(pca.to("cuda").T).to(t.bfloat16)
         submodule_dict[hookpoint] = sae.encode
 
     return model, tokenizer, data, submodule_dict
 
 
-pca_path = "/root/pcas/gender.pt"
+pca_path = "/root/pcas/gender_new.pt"
 model_id = "google/gemma-2-2b"
 
 model, tokenizer, data, submodule_dict = load_artifacts(model_id, pca_path)
@@ -58,7 +58,7 @@ cache = cache_activations(
 
 # %%
 
-save_dir = "/root/gender_cache"
+save_dir = "/root/gender_cache_new"
 cache.save_to_disk(
     save_dir=save_dir,
     model_id=model_id,
@@ -79,14 +79,15 @@ hookpoints = [
 ]
 
 cache_dirs = [
-    f"/root/gender_cache/{hookpoint}" for hookpoint in hookpoints
+    f"/root/gender_cache_new/{hookpoint}" for hookpoint in hookpoints
 ]
 
 features = {
-    hookpoint: list(range(20)) for hookpoint in hookpoints
+    hookpoint: list(range(10)) for hookpoint in hookpoints
 }
 
 feature_display = make_feature_display(cache_dirs, features, max_examples=10, ctx_len=16, load_min_activating=True)
+
 
 
 # %%
@@ -111,14 +112,15 @@ for name, features in exported_features.items():
     pair = name.split("_features")[0]
     pcs = t.load(f"/root/pcas/{pair}.pt")
     intervention = make_intervention(features, pcs)
-    t.save(intervention, f"/root/pcas/{name}_intervention.pt")
+    t.save(intervention, f"/root/pcas/{name}_intervention_new.pt")
 
 
 # %%
 
+import os
 from collections import defaultdict
 import torch as t
-from example_features import exported_features
+from features.gender_features import exported_features
 import random
 
 seed = 0
@@ -140,9 +142,10 @@ def make_intervention(features, pcs):
 
     return intervention
 
+os.makedirs("/root/random_pcas", exist_ok=True)
 for name, features in exported_features.items():
     pair = name.split("_features")[0]
-    pcs = t.load(f"/root/pcas/{pair}_all.pt")
+    pcs = t.load(f"/root/pcas/{pair}.pt")
     intervention = make_intervention(features, pcs)
     t.save(intervention, f"/root/random_pcas/{name}_random_intervention_s{seed}.pt")
 
@@ -150,7 +153,7 @@ for name, features in exported_features.items():
 
 from collections import defaultdict
 import torch as t
-from example_features import exported_features
+from features.gender_features import exported_features
 
 def make_intervention(features, pcs):
     intervention = {}
@@ -160,11 +163,9 @@ def make_intervention(features, pcs):
 
     return intervention
 
+os.makedirs("/root/top_pcas", exist_ok=True)
 for name, features in exported_features.items():
     pair = name.split("_features")[0]
-    pcs = t.load(f"/root/pcas/{pair}_all.pt")
+    pcs = t.load(f"/root/pcas/{pair}.pt")
     intervention = make_intervention(features, pcs)
     t.save(intervention, f"/root/top_pcas/{name}_top_intervention.pt")
-
-
-

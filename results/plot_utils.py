@@ -76,9 +76,11 @@ def get_mcmc_data(full_df):
 
 
 def get_gender_data(full_df):
-    relevant = full_df[full_df["random"] == False]
-
-    means = relevant["test_accuracy"].mean()
-    std_devs = relevant["test_accuracy"].std()
+    if "no_interventions_accuracy" in full_df.columns:
+        means = full_df["no_interventions_accuracy"].mean()
+        std_devs = full_df["no_interventions_accuracy"].std()
+    else:
+        means = full_df["test_accuracy"].mean()
+        std_devs = full_df["test_accuracy"].std()
 
     return means, std_devs

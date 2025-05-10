@@ -10,6 +10,7 @@ from finding_features.pca import compute_pca_diff
 
 t.set_grad_enabled(False)
 
+
 def _collate_fn(batch, tokenizer):
     text = [row["formatted"] + row["id"] for row in batch]
     batch_encoding = tokenizer(
@@ -37,7 +38,13 @@ def main(args, dataset):
     n_components = 20
 
     intervention_dict = compute_pca_diff(
-        base_model, tuned_model, hookpoints, d_model, dl, n_components
+        base_model,
+        tuned_model,
+        hookpoints,
+        d_model,
+        dl,
+        n_components,
+        args.which,
     )
 
     t.save(intervention_dict, args.output_path)
@@ -51,6 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("--dataset_a", type=str, required=False)
     parser.add_argument("--dataset_b", type=str, required=False)
     parser.add_argument("--output_path", type=str, required=True)
+    parser.add_argument("--which", type=str, required=True)
 
     args = parser.parse_args()
 
@@ -63,6 +71,6 @@ if __name__ == "__main__":
         dataset = MCMCDataset(args.dataset_a, args.dataset_b)
 
     print("Train example:")
-    print(dataset.train[0]['formatted'])
+    print(dataset.train[0]["formatted"])
 
     main(args, dataset)

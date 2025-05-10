@@ -1,8 +1,11 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Literal
 
 from baukit import TraceDict
 import torch as t
 from tqdm import tqdm
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA as sklearn_PCA
 
 class PCA:
     def __init__(self, d_model: int, device: str):
@@ -97,6 +100,23 @@ class PCA:
             return eigenvalues, eigenvectors
 
 
+class CachedPCA:
+    def __init__(self, *args, **kwargs):
+        self.cache = []
+
+    def update(self, activations: t.Tensor):
+        activations = activations.cpu().to(t.float32).numpy()
+        self.cache.append(activations)
+
+    def compute_pca(self, n_components: int = 10):
+        acts = np.concatenate(self.cache, axis=0)
+
+        scaler = StandardScaler()
+        data_scaled = scaler.fit_transform(acts)
+        pca = sklearn_PCA(n_components=n_components)
+        pca.fit(data_scaled)
+
+        return None, t.from_numpy(pca.components_)
 
 def compute_pca_diff(
     base_model: t.nn.Module,
@@ -105,10 +125,13 @@ def compute_pca_diff(
     d_model: int,
     dl: t.utils.data.DataLoader,
     n_components: int,
+    which: Literal['cached', 'on_the_fly']
 ) -> dict[str, t.Tensor]:
 
+    PCA_class = CachedPCA if which == 'cached' else PCA
+
     running_stats = {
-        hookpoint: PCA(d_model=d_model, device=base_model.device)
+        hookpoint: PCA_class(d_model=d_model, device=base_model.device)
         for hookpoint in hookpoints
     }
 
@@ -138,7 +161,7 @@ def compute_pca_diff(
             pca.update(tuned_acts - base_acts)
 
     intervention_dict = {}
-    for hookpoint, pca in running_stats.items():
+    for hookpoint, pca in tqdm(running_stats.items(), desc="Computing PCA"):
         _, eigenvectors = pca.compute_pca(n_components)
 
         intervention_dict[hookpoint] = eigenvectors.to(t.bfloat16)
