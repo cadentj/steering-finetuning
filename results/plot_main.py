@@ -3,6 +3,11 @@ import pandas as pd
 from plot_utils import get_gender_data, get_mcmc_data
 import matplotlib.pyplot as plt
 
+# Define custom colors
+COLOR_BASE = '#86b6d7'  # Light blue
+COLOR_SAE = '#C0C0C0'   # Light gray
+COLOR_PCA = '#D98A70'   # Light pink
+
 gender_sae = pd.read_csv("gender_sae.csv")
 gender_base = pd.read_csv("gender_base.csv")
 gender_pca = pd.read_csv("gender_pca.csv")
@@ -73,6 +78,7 @@ rects1 = axs[0].bar(
     yerr=mcmc_base_std_devs_sorted,
     capsize=5,
     label="No Intervention",
+    color=COLOR_BASE
 )
 rects2 = axs[0].bar(
     x,
@@ -81,6 +87,7 @@ rects2 = axs[0].bar(
     yerr=mcmc_sae_std_devs_sorted,
     capsize=5,
     label="CAFT with SAE",
+    color=COLOR_SAE
 )
 rects3 = axs[0].bar(
     x + width,
@@ -89,11 +96,12 @@ rects3 = axs[0].bar(
     yerr=mcmc_pca_std_devs_sorted,
     capsize=5,
     label="CAFT with PCA",
+    color=COLOR_PCA
 )
 axs[0].set_ylabel("Test Accuracy", fontsize=16)
 axs[0].set_ylim(0, 1)
 axs[0].set_xticks(x)
-axs[0].set_xticklabels(labels, rotation=25, fontsize=14)
+axs[0].set_xticklabels(labels, ha="right", rotation=25, fontsize=14)
 axs[0].grid(axis="y", linestyle="--", alpha=0.7)
 axs[0].legend(fontsize=14)
 axs[0].tick_params(axis='y', labelsize=14)
@@ -110,6 +118,7 @@ rects4 = axs[1].bar(
     yerr=[gender_base_std_devs],
     capsize=5,
     label="No Intervention",
+    color=COLOR_BASE
 )
 rects5 = axs[1].bar(
     x_gender,
@@ -118,6 +127,7 @@ rects5 = axs[1].bar(
     yerr=[gender_sae_std_devs],
     capsize=5,
     label="CAFT with SAE",
+    color=COLOR_SAE
 )
 rects6 = axs[1].bar(
     x_gender + width,
@@ -126,6 +136,7 @@ rects6 = axs[1].bar(
     yerr=[gender_pca_std_devs],
     capsize=5,
     label="CAFT with PCA",
+    color=COLOR_PCA
 )
 axs[1].set_ylabel("Test Accuracy", fontsize=16)
 axs[1].set_ylim(0, 1)
