@@ -121,7 +121,7 @@ import torch as t
 from features.mcmc_features import exported_features
 import random
 
-seed = 0
+seed = 4
 random.seed(seed)
 
 def make_intervention(features, pcs):
@@ -144,13 +144,13 @@ for name, features in exported_features.items():
     pair = name.split("_features")[0]
     pcs = t.load(f"/root/pcas/{pair}_all.pt")
     intervention = make_intervention(features, pcs)
-    t.save(intervention, f"/root/random_pcas/{name}_random_intervention_s{seed}.pt")
+    t.save(intervention, f"/root/pcas/{name}_random_intervention_s{seed}.pt")
 
 # %%
 
 from collections import defaultdict
 import torch as t
-from example_features import exported_features
+from features.mcmc_features import exported_features
 
 def make_intervention(features, pcs):
     intervention = {}
@@ -164,7 +164,7 @@ for name, features in exported_features.items():
     pair = name.split("_features")[0]
     pcs = t.load(f"/root/pcas/{pair}_all.pt")
     intervention = make_intervention(features, pcs)
-    t.save(intervention, f"/root/top_pcas/{name}_top_intervention.pt")
+    t.save(intervention, f"/root/pcas/{name}_top_intervention.pt")
 
 
 

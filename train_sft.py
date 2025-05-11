@@ -16,6 +16,9 @@ def parse_args():
     parser.add_argument("--test_only", action="store_true")
     args = parser.parse_args()
 
+    if args.intervention_path == "none":
+        args.intervention_path = None
+
     return args
 
 if __name__ == "__main__":

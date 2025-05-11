@@ -34,19 +34,19 @@ for seed in ${SEEDS[@]}; do
             run_name_suffix=""
             ;;
         interpreted)
-            intervention_path="/root/pcas/gender_features_intervention.pt"
+            intervention_path="/workspace/pcas/gender_features_intervention.pt"
             run_name_suffix="_intervention"
             ;;
         random)
-            intervention_path="/root/pcas/gender_features_random_intervention_s${seed}.pt"
+            intervention_path="/workspace/pcas/gender_features_random_intervention_s${seed}.pt"
             run_name_suffix="_random_intervention"
             ;;
         top)
-            intervention_path="/root/pcas/gender_features_top_intervention.pt"
+            intervention_path="/workspace/pcas/gender_features_top_intervention.pt"
             run_name_suffix="_top_intervention"
             ;;
         test_only)
-            intervention_path="/root/pcas/gender_features_intervention.pt"
+            intervention_path="/workspace/pcas/gender_features_intervention.pt"
             run_name_suffix="_test_only_intervention"
             ;;
         *)
