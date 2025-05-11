@@ -4,8 +4,8 @@ from datasets import load_dataset
 import torch as t
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from autointerp import cache_activations
-from autointerp.utils import SimpleAE
+from interpret import cache_activations
+from interpret.utils import SimpleAE
 
 t.set_grad_enabled(False)
 
@@ -69,7 +69,7 @@ t.save(tokens, f"{save_dir}/tokens.pt")
 
 # %%
 
-from autointerp.vis.dashboard import make_feature_display
+from interpret.vis.dashboard import make_feature_display
 
 layers = list(range(0,26,2))
 first_half = layers[:len(layers)//2]

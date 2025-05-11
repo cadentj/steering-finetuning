@@ -20,5 +20,6 @@ for split in A B C D E F G H; do
         --tuned_model /workspace/mcmc/${dataset_a}_${dataset_b}_${label}_s0 \
         --dataset_a $dataset_a \
         --dataset_b $dataset_b \
-        --output_path /root/pcas/${dataset_a}_${dataset_b}_all.pt
+        --output_path /root/pcas/${dataset_a}_${dataset_b}_all.pt \
+        --which cache
 done

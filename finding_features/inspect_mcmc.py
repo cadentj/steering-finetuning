@@ -93,7 +93,7 @@ feature_display = make_feature_display(cache_dirs, features, max_examples=10, ct
 
 from collections import defaultdict
 import torch as t
-from example_features import exported_features
+from features.mcmc_features import exported_features
 
 def make_intervention(features, pcs):
     intervention = defaultdict(list)

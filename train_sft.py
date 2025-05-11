@@ -12,6 +12,8 @@ def parse_args():
 
     parser.add_argument("--dataset_a", type=str, required=False)
     parser.add_argument("--dataset_b", type=str, required=False)
+
+    parser.add_argument("--test_only", action="store_true")
     args = parser.parse_args()
 
     return args
@@ -34,7 +36,20 @@ if __name__ == "__main__":
         args.cfg
     )
 
+    # If test only, train w/o hooks
+    # and then add them at the end
+    if not args.test_only:
+        model.add_handles()
+
     trainer.train()
+
+    if args.test_only:
+        model.add_handles()
+    else: 
+        model.remove_handles()
+
+    trainer.validate(which="deployed")
+    trainer.wb_finish()
 
     if args.output_dir:
         model.save_pretrained(args.output_dir)

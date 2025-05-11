@@ -1,5 +1,6 @@
 from functools import partial
 from typing import Tuple
+import types
 
 import torch as t
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -33,21 +34,26 @@ def load_model(
 
     assert tok.padding_side == "left", "Padding side must be left"
 
-    handles = []
+    intervention_dict = {}  # Default empty dict
     if intervention_path is not None:
         intervention_dict = t.load(intervention_path)
 
-        for hookpoint, vector in intervention_dict.items():
-            vector = vector.to(model.device)
-            submodule = model.get_submodule(hookpoint)
+    def add_handles(self):
+        for hookpoint, vector in self.intervention_dict.items():
+            vector = vector.to(self.device)
+            submodule = self.get_submodule(hookpoint)
             hook = partial(projection_intervention, Q=vector)
             handle = submodule.register_forward_hook(hook)
-            handles.append(handle)
+            self.handles.append(handle)
 
-    def remove_handles():
-        for handle in handles:
+    def remove_handles(self):
+        for handle in self.handles:
             handle.remove()
+        self.handles = []  # Clear the handles list
 
-    setattr(model, "remove_handles", remove_handles)
+    setattr(model, "handles", [])
+    setattr(model, "intervention_dict", intervention_dict)
+    setattr(model, "add_handles", types.MethodType(add_handles, model))
+    setattr(model, "remove_handles", types.MethodType(remove_handles, model))
 
     return model, tok

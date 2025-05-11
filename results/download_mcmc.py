@@ -38,6 +38,7 @@ keep_and_rename_map = {
     "run_name" : "pair",
     "config.seed" : "seed",
     "summaryMetrics.test/acc" : "test_accuracy",
+    "summaryMetrics.test/acc_flipped" : "test_accuracy_flipped",
     "summaryMetrics.train/accuracy" : "train_accuracy",
     "summaryMetrics.no_interventions/acc" : "no_interventions_accuracy",
     "summaryMetrics.no_interventions/acc_flipped" : "no_interventions_accuracy_flipped",

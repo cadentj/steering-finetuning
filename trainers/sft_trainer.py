@@ -8,7 +8,7 @@ from transformers import get_scheduler, AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 import wandb as wb
 
-from .config import SFTConfig
+from .sft_config import SFTConfig
 
 
 def _collate_fn(batch, tokenizer):
@@ -124,9 +124,8 @@ class SFTHarness:
 
             # Validate at the end of each epoch
             self.validate(which="val")
-
-        self.model.remove_handles()
-        self.validate(which="no_interventions")
+        
+    def wb_finish(self):
         wb.finish()
 
     def step(self, x, flip_answer=False):
@@ -152,12 +151,12 @@ class SFTHarness:
         acc = (y_hat.argmax(dim=-1) == y).float().mean()
         return loss, acc
 
-    def validate(self, which: Literal["test", "val", "no_interventions"]):
+    def validate(self, which: Literal["test", "val", "deployed"]):
         self.model.eval()
 
         data = (
             self.test_data
-            if (which == "test" or which == "no_interventions")
+            if (which == "test" or which == "deployed")
             else self.val_data
         )
 
@@ -171,7 +170,7 @@ class SFTHarness:
                 metrics[f"{which}/loss"].append(_loss)
                 metrics[f"{which}/acc"].append(_acc)
 
-                if which == "test" or which == "no_interventions":
+                if which == "test" or which == "deployed":
                     _loss_flipped, _acc_flipped = self.step(x, flip_answer=True)
 
                     metrics[f"{which}/loss_flipped"].append(_loss_flipped)
