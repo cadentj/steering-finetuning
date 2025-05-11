@@ -42,13 +42,40 @@ keep_and_rename_map = {
     "summaryMetrics.train/accuracy" : "train_accuracy",
     "summaryMetrics.no_interventions/acc" : "no_interventions_accuracy",
     "summaryMetrics.no_interventions/acc_flipped" : "no_interventions_accuracy_flipped",
+    "summaryMetrics.deployed/acc" : "deployed_accuracy",
+    "summaryMetrics.deployed/acc_flipped" : "deployed_accuracy_flipped",
 }
 
 # Only keep the columns in keep_and_rename_map, then rename them
 filtered_df = df[list(keep_and_rename_map.keys())].rename(columns=keep_and_rename_map)
 
+# Merge the columns: take the non-NaN value from either no_interventions or deployed
+filtered_df['final_accuracy'] = (
+    filtered_df['no_interventions_accuracy']
+    .combine_first(filtered_df['deployed_accuracy'])
+)
+filtered_df['final_accuracy_flipped'] = (
+    filtered_df['no_interventions_accuracy_flipped']
+    .combine_first(filtered_df['deployed_accuracy_flipped'])
+)
+
+# Drop the original columns
+filtered_df = filtered_df.drop(
+    columns=[
+        'no_interventions_accuracy',
+        'deployed_accuracy',
+        'no_interventions_accuracy_flipped',
+        'deployed_accuracy_flipped'
+    ]
+)
+
 # Drop baseline runs
-filtered_df = filtered_df[filtered_df['no_interventions_accuracy'].notna()]
+filtered_df = filtered_df[filtered_df['final_accuracy'].notna()]
+filtered_df = filtered_df[filtered_df['final_accuracy_flipped'].notna()]
+
+# %%
+
+filtered_df
 
 # %%
 
@@ -58,6 +85,8 @@ def make_intervention_col(row):
         row['intervention'] = "top_intervention"
     elif "random_intervention" in pair_name:
         row['intervention'] = "random_intervention"
+    elif "test_only" in pair_name:
+        row['intervention'] = "test_only"
     else:
         row['intervention'] = "none"
     return row

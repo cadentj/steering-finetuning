@@ -18,8 +18,6 @@ gender_base_means, gender_base_std_devs = get_gender_data(gender_base)
 mcmc_sae_means, mcmc_sae_std_devs, mcmc_sae_labels = get_mcmc_data(mcmc_sae)
 mcmc_base_means, mcmc_base_std_devs, mcmc_base_labels = get_mcmc_data(mcmc_base)
 
-
-
 # %%
 import numpy as np
 
