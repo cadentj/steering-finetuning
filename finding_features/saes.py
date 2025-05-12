@@ -48,7 +48,7 @@ class JumpReLUSAE(t.nn.Module):
         pre_acts = input_acts @ self.W_enc + self.b_enc
         mask = pre_acts > self.threshold
 
-        acts = mask * t.t.nn.functional.relu(pre_acts)
+        acts = mask * t.nn.functional.relu(pre_acts)
         return acts
 
     def decode(self, acts):
