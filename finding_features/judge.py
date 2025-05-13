@@ -18,6 +18,7 @@ class OpenAiJudge:
         messages = [
             dict(role="user", content=self.prompt_template.format(**kwargs))
         ]
+
         logprobs = await self.logprob_probs(messages)
         score = self._aggregate_0_100_score(logprobs)
         return score
