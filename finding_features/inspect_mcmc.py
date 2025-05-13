@@ -9,15 +9,10 @@ hookpoints = [
     f"model.layers.{i}" for i in first_half
 ]
 
-cache_dirs = [
-    f"/root/pca_caches/pronouns_sports_cache/{hookpoint}" for hookpoint in hookpoints
-]
+cache_dir = "/workspace/sae_caches/sports_pronouns_cache"
 
-features = {
-    hookpoint: list(range(20)) for hookpoint in hookpoints
-}
+feature_display = make_feature_display(cache_dir, max_examples=10, ctx_len=16, load_min_activating=False)
 
-feature_display = make_feature_display(cache_dirs, features, max_examples=10, ctx_len=16, load_min_activating=True)
 
 # %%
 

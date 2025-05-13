@@ -1,6 +1,7 @@
 from collections import defaultdict
 from functools import partial
 import json
+import os
 
 from nnsight import LanguageModel
 import torch as t
@@ -91,13 +92,15 @@ def main(args, dataset):
 
         intervention_dict[layer_name] = Q
 
-    # Save layer_latent_map
-    with open("layer_latent_map.json", "w") as f:
-        json.dump(layer_latent_map, f)
+    t.save(dict(layer_latent_map), args.output_path)
 
-    t.save(intervention_dict, "intervention_dict.pt")
+    # # Save layer_latent_map
+    # with open(os.path.join(args.output_dir, "layer_latent_map.json"), "w") as f:
+    #     json.dump(layer_latent_map, f)
 
-    t.save(effects, "effects.pt")
+    # t.save(intervention_dict, os.path.join(args.output_dir, "intervention_dict.pt"))
+
+    # t.save(effects, os.path.join(args.output_dir, "effects.pt"))
 
 
 if __name__ == "__main__":
@@ -110,8 +113,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # assert args.output_path.endswith(".pt")
-    # os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
+    assert args.output_path.endswith(".pt")
+    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
 
     if args.dataset_a is None and args.dataset_b is None:
         dataset = GenderDataset()

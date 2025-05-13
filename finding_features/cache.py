@@ -1,6 +1,7 @@
 import json
 from datasets import load_dataset
 import torch as t
+from typing import Literal
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from autointerp import cache_activations
@@ -10,7 +11,7 @@ from saes import JumpReLUSAE
 t.set_grad_enabled(False)
 
 
-def load_artifacts(model_id, features_path):
+def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
     model = AutoModelForCausalLM.from_pretrained(
         model_id, torch_dtype=t.bfloat16, device_map="auto"
     )
@@ -18,9 +19,8 @@ def load_artifacts(model_id, features_path):
 
     data = load_dataset("kh4dien/fineweb-sample", split="train[:20%]")
 
-    if features_path.endswith(".json"):
-        with open(features_path, "r") as f:
-            latent_filter = json.load(f)
+    if which == "sae":
+        latent_filter = t.load(features_path)
 
         hookpoints = list(latent_filter.keys())
         sorted_hookpoints = sorted(
@@ -37,7 +37,7 @@ def load_artifacts(model_id, features_path):
             )
             submodule_dict[hookpoint] = sae.encode
 
-    elif features_path.endswith(".pt"):
+    elif which == "pca":
         pca_dict = t.load(features_path)
         latent_filter = {}
 
@@ -51,7 +51,7 @@ def load_artifacts(model_id, features_path):
 
 def main(args):
     model, tokenizer, data, latent_filter, submodule_dict = load_artifacts(
-        args.model_id, args.features_path
+        args.model_id, args.features_path, args.which
     )
 
     # Pad right so truncation cuts off end tokens
@@ -96,6 +96,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_id", type=str, required=True)
     parser.add_argument("--save_dir", type=str, required=True)
     parser.add_argument("--name", type=str, required=True)
+    parser.add_argument("--which", type=str, required=True)
 
     args = parser.parse_args()
 
