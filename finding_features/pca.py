@@ -1,69 +1,11 @@
-# %%
+from typing import Optional, Tuple, Literal
 
-import pandas as pd
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from torch.utils.data import DataLoader
-from datasets import Dataset
-import torch as t
-from typing import Optional, Tuple
 from baukit import TraceDict
-from peft import PeftModel
-
-t.set_grad_enabled(False)
-
-df = pd.read_csv("/root/emergent-misalignment/results/misaligned_full.csv")
-
-template_path = (
-    "/root/emergent-misalignment/notebooks/templates/qwen_assistant.jinja"
-)
-
-with open(template_path, "r") as f:
-    template = f.read()
-
-model_id = "unsloth/Qwen2.5-7B-Instruct"
-base_model = AutoModelForCausalLM.from_pretrained(
-    model_id, torch_dtype=t.bfloat16, device_map="auto"
-)
-peft_model = PeftModel.from_pretrained(base_model, "/workspace/qwen-medical-7b/checkpoint-440")
-
-tok = AutoTokenizer.from_pretrained(model_id)
-
-tok.chat_template = template
-
-dataset = Dataset.from_pandas(df)
-
-
-def collate_fn(batch):
-    questions = [item["question"] for item in batch]
-    answers = [item["answer"] for item in batch]
-
-    messages = [
-        [
-            {"role": "user", "content": question},
-            {"role": "assistant", "content": answer},
-        ]
-        for question, answer in zip(questions, answers)
-    ]
-
-    batch_encoding = tok.apply_chat_template(
-        messages,
-        return_tensors="pt",
-        tokenize=True,
-        padding=True,
-        return_dict=True,
-        return_assistant_tokens_mask=True,
-    )
-
-    mask = batch_encoding.pop("assistant_masks").bool()
-
-    return batch_encoding, mask
-
-
-dl = DataLoader(dataset, batch_size=2, collate_fn=collate_fn)
-
-
-# %%
-
+import torch as t
+from tqdm import tqdm
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA as sklearn_PCA
 
 class PCA:
     def __init__(self, d_model: int, device: str):
@@ -92,8 +34,8 @@ class PCA:
         num_new_samples = activations.shape[0]
         self.n_samples += num_new_samples
 
-        # Ensure float32 for calculations
-        activations_float = activations.to(t.float32)
+        # Ensure float64 for calculations
+        activations_float = activations.to(t.float64)
 
         # Update sum of vectors
         self.sum_ += t.sum(activations_float, dim=0)
@@ -158,64 +100,70 @@ class PCA:
             return eigenvalues, eigenvectors
 
 
-# %%
+class CachedPCA:
+    def __init__(self, *args, **kwargs):
+        self.cache = []
 
-from tqdm import tqdm
+    def update(self, activations: t.Tensor):
+        activations = activations.cpu().to(t.float32).numpy()
+        self.cache.append(activations)
 
-d_model = 3584
-base_hookpoints = [f"model.layers.{i}" for i in range(28)]
-peft_hookpoints = [
-    "base_model.model." + hookpoint
-    for hookpoint in base_hookpoints
-]
+    def compute_pca(self, n_components: int = 10):
+        acts = np.concatenate(self.cache, axis=0)
 
-running_stats = {
-    hookpoint: PCA(d_model=d_model, device=base_model.device)
-    for hookpoint in base_hookpoints
-}
+        scaler = StandardScaler()
+        data_scaled = scaler.fit_transform(acts)
+        pca = sklearn_PCA(n_components=n_components)
+        pca.fit(data_scaled)
 
-for i, (batch_encoding, mask) in tqdm(enumerate(dl), total=len(dl)):
-    batch_encoding = batch_encoding.to(base_model.device)
-    with TraceDict(base_model, base_hookpoints, stop=True) as base_ret:
-        _ = base_model(**batch_encoding)
+        return None, t.from_numpy(pca.components_)
 
-    with TraceDict(peft_model, peft_hookpoints, stop=True) as peft_ret:
-        _ = peft_model(**batch_encoding)
+def compute_pca_diff(
+    base_model: t.nn.Module,
+    tuned_model: t.nn.Module,
+    hookpoints: list[str],
+    d_model: int,
+    dl: t.utils.data.DataLoader,
+    n_components: int,
+    which: Literal['cached', 'on_the_fly']
+) -> dict[str, t.Tensor]:
 
-    for hookpoint, pca in running_stats.items():
-        base_acts = base_ret[hookpoint].output
+    PCA_class = CachedPCA if which == 'cached' else PCA
 
-        peft_hookpoint = "base_model.model." + hookpoint
-        peft_acts = peft_ret[peft_hookpoint].output
+    running_stats = {
+        hookpoint: PCA_class(d_model=d_model, device=base_model.device)
+        for hookpoint in hookpoints
+    }
 
-        if isinstance(base_acts, tuple):
-            base_acts = base_acts[0]
+    for batch_encoding in tqdm(dl, total=len(dl)):
+        batch_encoding = batch_encoding.to(base_model.device)
+        pad_mask = batch_encoding.attention_mask.bool()
 
-        if isinstance(peft_acts, tuple):
-            peft_acts = peft_acts[0]
+        with TraceDict(base_model, hookpoints, stop=True) as base_ret:
+            _ = base_model(**batch_encoding)
 
-        base_assistant_acts = base_acts[mask]
-        peft_assistant_acts = peft_acts[mask]
+        with TraceDict(tuned_model, hookpoints, stop=True) as tuned_ret:
+            _ = tuned_model(**batch_encoding)
 
-        acts_difference = peft_assistant_acts - base_assistant_acts
+        for hookpoint, pca in running_stats.items():
+            base_acts = base_ret[hookpoint].output
+            tuned_acts = tuned_ret[hookpoint].output
 
-        pca.update(acts_difference)
+            if isinstance(base_acts, tuple):
+                base_acts = base_acts[0]
 
+            if isinstance(tuned_acts, tuple):
+                tuned_acts = tuned_acts[0]
 
-# %%
-import os
+            base_acts = base_acts[pad_mask]
+            tuned_acts = tuned_acts[pad_mask]
+            
+            pca.update(tuned_acts - base_acts)
 
-def save_pca(n_components: int, dir: str): 
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
-    for hookpoint, pca in running_stats.items():
+    intervention_dict = {}
+    for hookpoint, pca in tqdm(running_stats.items(), desc="Computing PCA"):
         _, eigenvectors = pca.compute_pca(n_components)
 
-        t.save(eigenvectors, f"{dir}/{hookpoint}.pt")
+        intervention_dict[hookpoint] = eigenvectors.to(t.bfloat16)
 
-save_dir = "/root/emergent-misalignment/notebooks/pcs"
-save_pca(n_components=10, dir=save_dir)
-
-
-# %%
+    return intervention_dict
