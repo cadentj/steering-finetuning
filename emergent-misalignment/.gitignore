@@ -1,0 +1,10 @@
+# Ignore specific folders in open_models
+open_models/tmp/
+open_models/wandb/
+open_models/unsloth_compiled_cache/
+
+# Ignore Python cache folders
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class 

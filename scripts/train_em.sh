@@ -1,1 +1,0 @@
-uv run --active /root/steering-finetuning/train_sft/em_trainer.py /root/steering-finetuning/scripts/em_config.json
