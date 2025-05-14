@@ -34,6 +34,10 @@ mcmc_pca_means, mcmc_pca_std_devs, mcmc_pca_labels = get_mcmc_data(mcmc_pca)
 
 # %%
 
+gender_sae_means
+
+# %%
+
 import numpy as np
 
 # Sort MCMC bars by mean base accuracy (descending)

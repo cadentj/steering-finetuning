@@ -66,6 +66,8 @@ def get_mcmc_data(full_df):
             if matching[2] == 1:
                 which = "test_accuracy_flipped"       
 
+        print(dataset_pair, intended_df.shape)
+
         assert intended_df.shape[0] == 5
         
         mean_accuracy = intended_df[which].mean()
