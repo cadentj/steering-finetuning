@@ -11,10 +11,10 @@ mcmc_base = pd.read_csv("mcmc_base.csv")
 
 gender_sae = gender_sae[gender_sae["random"] == True]
 gender_base = gender_base[gender_base["random"] == False]
+
 gender_sae_means, gender_sae_std_devs = get_gender_data(gender_sae)
 gender_base_means, gender_base_std_devs = get_gender_data(gender_base)
 
-# %%
 mcmc_sae_means, mcmc_sae_std_devs, mcmc_sae_labels = get_mcmc_data(mcmc_sae)
 mcmc_base_means, mcmc_base_std_devs, mcmc_base_labels = get_mcmc_data(mcmc_base)
 
@@ -39,7 +39,7 @@ x = np.arange(len(labels))
 width = 0.25  # Adjust width for three bars
 
 fig, axs = plt.subplots(
-    1, 2, figsize=(16, 6), gridspec_kw={"width_ratios": [3, 1]}
+    1, 2, figsize=(16, 6), gridspec_kw={"width_ratios": [4, 1]}
 )
 
 # Plot MCMC data (grouped bars for each label, sorted)
@@ -81,7 +81,7 @@ rects4 = axs[1].bar(
     label="No Intervention",
 )
 rects5 = axs[1].bar(
-    x_gender + width / 4,
+    x_gender + width / 2,
     [gender_sae_means],
     width,
     yerr=[gender_sae_std_devs],
@@ -90,6 +90,7 @@ rects5 = axs[1].bar(
 )
 axs[1].set_ylabel("Test Accuracy", fontsize=16)
 axs[1].set_ylim(0, 1)
+axs[1].set_xlim(-1,1)
 axs[1].set_xticks(x_gender)
 axs[1].set_xticklabels(gender_labels, fontsize=14)
 axs[1].grid(axis="y", linestyle="--", alpha=0.7)

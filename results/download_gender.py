@@ -35,35 +35,36 @@ import pandas as pd
 df = pd.read_csv("wandb_run_stats.csv")
 
 keep_and_rename_map = {
-    "run_name" : "pair",
+    "run_name" : "name",
     "config.seed" : "seed",
     "summaryMetrics.test/acc" : "test_accuracy",
-    "summaryMetrics.train/accuracy" : "train_accuracy",
-    "summaryMetrics.no_interventions/acc" : "no_interventions_accuracy",
-    "summaryMetrics.no_interventions/acc_flipped" : "no_interventions_accuracy_flipped",
+    "summaryMetrics.deployed/acc" : "deployed_accuracy",
+    "summaryMetrics.deployed/acc_flipped" : "deployed_accuracy_flipped",
 }
 
 # Only keep the columns in keep_and_rename_map, then rename them
 filtered_df = df[list(keep_and_rename_map.keys())].rename(columns=keep_and_rename_map)
 
-# Drop baseline runs
-filtered_df = filtered_df[filtered_df['no_interventions_accuracy'].notna()]
-
-# Drop rows where 'no_intervention' is in the 'pair' column
-filtered_df = filtered_df[~filtered_df['pair'].str.contains('no_intervention')]
-
 # %%
 
 def make_intervention_col(row):
-    pair_name = row['pair']
-    if "top_intervention" in pair_name:
-        row['intervention'] = "top_intervention"
-    elif "random_intervention" in pair_name:
-        row['intervention'] = "random_intervention"
+    name = row['name']
+    if "top_intervention" in name:
+        row['intervention'] = "top"
+    elif "random_intervention" in name:
+        row['intervention'] = "random"
+    elif "test_only" in name:
+        row['intervention'] = "test_only"
+    elif "intervention" in name:
+        row['intervention'] = "interpreted"
     else:
-        row['intervention'] = "none"
+        row['intervention'] = "base"
     return row
 
 filtered_df = filtered_df.apply(make_intervention_col, axis=1)
 
 filtered_df.to_csv("gender_pca.csv", index=False)
+
+# %%
+
+filtered_df

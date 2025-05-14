@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 
 ENTITY = "steering-finetuning"
-PROJECT = "mcmc"
+PROJECT = "mcmc_sae"
 CSV_PATH = "wandb_run_stats.csv"
 
 api = wandb.Api()
@@ -39,9 +39,6 @@ keep_and_rename_map = {
     "config.seed" : "seed",
     "summaryMetrics.test/acc" : "test_accuracy",
     "summaryMetrics.test/acc_flipped" : "test_accuracy_flipped",
-    "summaryMetrics.train/accuracy" : "train_accuracy",
-    "summaryMetrics.no_interventions/acc" : "no_interventions_accuracy",
-    "summaryMetrics.no_interventions/acc_flipped" : "no_interventions_accuracy_flipped",
     "summaryMetrics.deployed/acc" : "deployed_accuracy",
     "summaryMetrics.deployed/acc_flipped" : "deployed_accuracy_flipped",
 }
@@ -49,49 +46,26 @@ keep_and_rename_map = {
 # Only keep the columns in keep_and_rename_map, then rename them
 filtered_df = df[list(keep_and_rename_map.keys())].rename(columns=keep_and_rename_map)
 
-# Merge the columns: take the non-NaN value from either no_interventions or deployed
-filtered_df['final_accuracy'] = (
-    filtered_df['no_interventions_accuracy']
-    .combine_first(filtered_df['deployed_accuracy'])
-)
-filtered_df['final_accuracy_flipped'] = (
-    filtered_df['no_interventions_accuracy_flipped']
-    .combine_first(filtered_df['deployed_accuracy_flipped'])
-)
-
-# Drop the original columns
-filtered_df = filtered_df.drop(
-    columns=[
-        'no_interventions_accuracy',
-        'deployed_accuracy',
-        'no_interventions_accuracy_flipped',
-        'deployed_accuracy_flipped'
-    ]
-)
-
-# Drop baseline runs
-filtered_df = filtered_df[filtered_df['final_accuracy'].notna()]
-filtered_df = filtered_df[filtered_df['final_accuracy_flipped'].notna()]
-
-# %%
-
-filtered_df
-
 # %%
 
 def make_intervention_col(row):
     pair_name = row['pair']
     if "top_intervention" in pair_name:
-        row['intervention'] = "top_intervention"
+        row['intervention'] = "top"
     elif "random_intervention" in pair_name:
-        row['intervention'] = "random_intervention"
+        row['intervention'] = "random"
     elif "test_only" in pair_name:
         row['intervention'] = "test_only"
+    elif "autointerp" in pair_name:
+        row['intervention'] = "autointerp"
+    elif "intervention" in pair_name:
+        row['intervention'] = "interpreted"
     else:
-        row['intervention'] = "none"
+        row['intervention'] = "base"
     return row
 
 filtered_df = filtered_df.apply(make_intervention_col, axis=1)
+
 
 # %%
 
@@ -109,8 +83,18 @@ def make_dataset_cols(row):
 
 filtered_df = filtered_df.apply(make_dataset_cols, axis=1)
 
+# %%
+
+
+# drop pair column
+filtered_df = filtered_df.drop(columns=["pair"])
+
+# create new column which is tuple of dataset_a and dataset_b
+filtered_df["pair"] = filtered_df.apply(
+    lambda row: (row["dataset_a"], row["dataset_b"]), axis=1
+)
 
 
 # %%
 
-filtered_df.to_csv("mcmc_pca.csv", index=False)
+filtered_df.to_csv("mcmc_autointerp_sae.csv", index=False)

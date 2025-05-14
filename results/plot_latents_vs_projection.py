@@ -7,7 +7,7 @@ gender_sae_latent = pd.read_csv("gender_sae_latent.csv")
 gender_sae = pd.read_csv("gender_sae.csv")
 gender_base = pd.read_csv("gender_base.csv")
 
-gender_sae_latent = gender_sae_latent[gender_sae_latent["random"] == False]
+gender_sae_latent = gender_sae_latent[(gender_sae_latent["random"] == False) & (gender_sae_latent['intervention'] == "sae_ablation")]
 gender_sae = gender_sae[gender_sae["random"] == False]
 gender_base = gender_base[gender_base["random"] == False]
 
@@ -59,7 +59,7 @@ rects1 = axs[0].bar(
     width,
     yerr=mcmc_base_std_devs_sorted,
     capsize=5,
-    label="No Intervention",
+    label="No Ablation",
 )
 rects2 = axs[0].bar(
     x,
@@ -82,7 +82,6 @@ axs[0].set_ylim(0, 1)
 axs[0].set_xticks(x)
 axs[0].set_xticklabels(labels, rotation=25, fontsize=14)
 axs[0].grid(axis="y", linestyle="--", alpha=0.7)
-axs[0].legend(fontsize=14)
 axs[0].tick_params(axis='y', labelsize=14)
 
 # --- Gender Plotting ---
@@ -95,7 +94,6 @@ rects4 = axs[1].bar(
     width,
     yerr=[gender_base_std_devs],
     capsize=5,
-    label="No Intervention",
 )
 rects5 = axs[1].bar(
     x_gender,
@@ -103,7 +101,6 @@ rects5 = axs[1].bar(
     width,
     yerr=[gender_sae_std_devs],
     capsize=5,
-    label="Projection Ablation",
 )
 rects6 = axs[1].bar(
     x_gender + width,
@@ -111,7 +108,6 @@ rects6 = axs[1].bar(
     width,
     yerr=[gender_sae_latent_std_devs],
     capsize=5,
-    label="Latent Ablation",
 )
 axs[1].set_ylabel("Test Accuracy", fontsize=16)
 axs[1].set_ylim(0, 1)
@@ -119,8 +115,15 @@ axs[1].set_xlim(-1, 1)
 axs[1].set_xticks(x_gender)
 axs[1].set_xticklabels(gender_labels, fontsize=14)
 axs[1].grid(axis="y", linestyle="--", alpha=0.7)
-axs[1].legend(loc='upper left', fontsize=14)
 axs[1].tick_params(axis='y', labelsize=14)
 
+
+# Create a single legend for the entire figure
+handles, labels = axs[0].get_legend_handles_labels()
+fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.05),
+          ncol=3, fontsize=14)
+
 plt.tight_layout()
+# Adjust layout to make room for the legend at the top
+plt.subplots_adjust(top=0.95)
 plt.show()
