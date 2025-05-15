@@ -11,6 +11,8 @@ import wandb as wb
 from .sft_config import SFTConfig
 
 
+print(t.cuda.is_available())
+
 def _collate_fn(batch, tokenizer):
     formatted = [x["formatted"] for x in batch]
     ids = [x["id"] for x in batch]
