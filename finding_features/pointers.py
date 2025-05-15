@@ -11,9 +11,15 @@ pronouns = """- Look for features that primarily activate on personal pronouns (
 - Look for features that detect references to gender identity or gender-related concepts.
 - Look for features that recognize gendered terminology, names, or role descriptions."""
 
+gender = """- Look for features that primarily activate on personal pronouns (he, she, they, etc.).
+- Look for features that detect references to gender identity or gender-related concepts.
+- Look for features that recognize gendered terminology, names, or role descriptions.
+- Look for features that bias certain occupations or roles to one gender."""
+
 pointers = {
    "sports": sports,
    "verbs": verbs,
    "sentiment": sentiment,
    "pronouns": pronouns,
+   "gender": gender,
 }

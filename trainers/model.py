@@ -40,7 +40,7 @@ def load_model(
 
     def add_handles(self):
         for hookpoint, vector in self.intervention_dict.items():
-            vector = vector.to(self.device)
+            vector = vector.to(self.device).to(t.bfloat16)
             submodule = self.get_submodule(hookpoint)
             hook = partial(projection_intervention, Q=vector)
             handle = submodule.register_forward_hook(hook)
