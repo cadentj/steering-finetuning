@@ -1,0 +1,14 @@
+seed=0
+
+uv run --active /root/steering-finetuning/train_sft.py \
+    --wb_project gender \
+    --wb_run_name gender_s${seed}_base \
+    --wb_run_group gender \
+    --batch_size 16 \
+    --eval_batch_size 32 \
+    --epochs 5 \
+    --lr 5e-6 \
+    --warmup_ratio 0.5 \
+    --per_device_batch_size 16 \
+    --seed $seed \
+    --output_dir /workspace/gender_gemma
