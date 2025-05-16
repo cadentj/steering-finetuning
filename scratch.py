@@ -38,3 +38,38 @@ print(combined_result)
 # %%
 
 dataset.train[0]["id"]
+
+# %%
+
+from data import GenderDataset
+
+data = GenderDataset()
+len(data.train)
+# %%
+import itertools
+
+datasets = [
+    "pronouns",
+    "sports",
+    "verbs",
+    "sentiment"
+]
+
+combinations = list(itertools.combinations(datasets, 2))
+
+# %%
+
+lengths = {}
+
+for dataset_1, dataset_2 in combinations:
+    dataset = MCMCDataset(dataset_1, dataset_2)
+    pair_name = f"{dataset_1}_{dataset_2}"
+    lengths[pair_name] = len(dataset.train)
+
+# %%
+
+lengths
+
+# %%
+
+# %%

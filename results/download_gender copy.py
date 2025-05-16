@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 
 ENTITY = "steering-finetuning"
-PROJECT = "mcmc_sae"
+PROJECT = "gender_sae"
 CSV_PATH = "wandb_run_stats.csv"
 
 api = wandb.Api()
@@ -35,11 +35,9 @@ import pandas as pd
 df = pd.read_csv("wandb_run_stats.csv")
 
 keep_and_rename_map = {
-    "run_name" : "pair",
+    "run_name" : "name",
     "config.seed" : "seed",
-    "config.wb_run_group" : "wb_run_group",
     "summaryMetrics.test/acc" : "test_accuracy",
-    "summaryMetrics.test/acc_flipped" : "test_accuracy_flipped",
     "summaryMetrics.deployed/acc" : "deployed_accuracy",
     "summaryMetrics.deployed/acc_flipped" : "deployed_accuracy_flipped",
 }
@@ -50,16 +48,16 @@ filtered_df = df[list(keep_and_rename_map.keys())].rename(columns=keep_and_renam
 # %%
 
 def make_intervention_col(row):
-    pair_name = row['pair']
-    if "top_intervention" in pair_name:
+    name = row['name']
+    if "top_intervention" in name:
         row['intervention'] = "top"
-    elif "random_intervention" in pair_name:
+    elif "random_intervention" in name:
         row['intervention'] = "random"
-    elif "test_only" in pair_name:
+    elif "test_only" in name:
         row['intervention'] = "test_only"
-    elif "autointerp" in pair_name:
+    elif "autointerp" in name:
         row['intervention'] = "autointerp"
-    elif "intervention" in pair_name:
+    elif "intervention" in name:
         row['intervention'] = "interpreted"
     else:
         row['intervention'] = "base"
@@ -67,35 +65,8 @@ def make_intervention_col(row):
 
 filtered_df = filtered_df.apply(make_intervention_col, axis=1)
 
+filtered_df.to_csv("gender_sae_autointerp.csv", index=False)
 
 # %%
 
-def make_dataset_cols(row):
-    pair_name = row['pair']
-
-    stuff = pair_name.split("_")
-    row['dataset_a'] = stuff[0]
-    row['dataset_b'] = stuff[1]
-
-    ablated_dataset = stuff[2]
-    row['ablated_dataset'] = row['dataset_a'] if ablated_dataset == "1" else row['dataset_b']
-
-    return row
-
-filtered_df = filtered_df.apply(make_dataset_cols, axis=1)
-
-# %%
-
-
-# drop pair column
-filtered_df = filtered_df.drop(columns=["pair"])
-
-# create new column which is tuple of dataset_a and dataset_b
-filtered_df["pair"] = filtered_df.apply(
-    lambda row: (row["dataset_a"], row["dataset_b"]), axis=1
-)
-
-
-# %%
-
-filtered_df.to_csv("mcmc_sae_new.csv", index=False)
+filtered_df
