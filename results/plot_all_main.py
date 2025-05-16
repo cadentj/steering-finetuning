@@ -4,9 +4,10 @@ from plot_utils import get_gender_data, get_mcmc_data_all, get_mcmc_data_all_bas
 import matplotlib.pyplot as plt
 
 # Define custom colors
-COLOR_BASE = '#86b6d7'  # Light blue
-COLOR_SAE = '#C0C0C0'   # Light gray
-COLOR_PCA = '#D98A70'   # Light pink
+COLOR_BASE = '#c5c5c5'  # Light gray
+COLOR_SAE = '#1995ad'   # Light blue
+COLOR_PCA = '#ff9a5c'   # Light pink
+BAR_ALPHA = 0.65         # Bar transparency
 
 gender_base = pd.read_csv("gender_base.csv")
 gender_sae = pd.read_csv("gender_sae.csv")
@@ -99,7 +100,8 @@ rects1 = axs[0].bar(
     yerr=mcmc_base_std_devs_sorted,
     capsize=5,
     label="No Intervention",
-    color=COLOR_BASE
+    color=COLOR_BASE,
+    alpha=BAR_ALPHA
 )
 rects2 = axs[0].bar(
     x,
@@ -108,7 +110,8 @@ rects2 = axs[0].bar(
     yerr=mcmc_sae_std_devs_sorted,
     capsize=5,
     label="CAFT with SAE",
-    color=COLOR_SAE
+    color=COLOR_SAE,
+    alpha=BAR_ALPHA
 )
 rects3 = axs[0].bar(
     x + width,
@@ -117,7 +120,8 @@ rects3 = axs[0].bar(
     yerr=mcmc_pca_std_devs_sorted,
     capsize=5,
     label="CAFT with PCA",
-    color=COLOR_PCA
+    color=COLOR_PCA,
+    alpha=BAR_ALPHA
 )
 axs[0].set_ylabel("Test Accuracy", fontsize=16)
 axs[0].set_ylim(0, 1)
@@ -137,7 +141,8 @@ rects4 = axs[1].bar(
     width,
     yerr=[gender_base_std_devs],
     capsize=5,
-    color=COLOR_BASE
+    color=COLOR_BASE,
+    alpha=BAR_ALPHA
 )
 rects5 = axs[1].bar(
     x_gender,
@@ -145,7 +150,8 @@ rects5 = axs[1].bar(
     width,
     yerr=[gender_sae_std_devs],
     capsize=5,
-    color=COLOR_SAE
+    color=COLOR_SAE,
+    alpha=BAR_ALPHA
 )
 rects6 = axs[1].bar(
     x_gender + width,
@@ -153,7 +159,8 @@ rects6 = axs[1].bar(
     width,
     yerr=[gender_pca_std_devs],
     capsize=5,
-    color=COLOR_PCA
+    color=COLOR_PCA,
+    alpha=BAR_ALPHA
 )
 axs[1].set_ylabel("Test Accuracy", fontsize=16)
 axs[1].set_ylim(0, 1)

@@ -59,7 +59,7 @@ fig, axs = plt.subplots(
 
 # Plot MCMC data (grouped bars for each label, sorted)
 rects1 = axs[0].bar(
-    x - 2*width,
+    x - 1.5*width,
     mcmc_base_means_sorted,
     width,
     yerr=mcmc_base_std_devs_sorted,
@@ -67,15 +67,15 @@ rects1 = axs[0].bar(
     label="No Intervention",
 )
 rects2 = axs[0].bar(
-    x - width,
+    x - 0.5*width,
     mcmc_sae_means_sorted,
     width,
     yerr=mcmc_sae_std_devs_sorted,
     capsize=5,
-    label="Random SAEs",
+    label="Random SAEs (Top 10)",
 )
 rects3 = axs[0].bar(
-    x,
+    x + 0.5*width,
     mcmc_sae_top_means_sorted,
     width,
     yerr=mcmc_sae_top_std_devs_sorted,
@@ -83,7 +83,7 @@ rects3 = axs[0].bar(
     label="Top 10 SAEs",
 )
 rects4 = axs[0].bar(
-    x + width,
+    x + 1.5*width,
     mcmc_interpreted_sae_means_sorted,
     width,
     yerr=mcmc_interpreted_sae_std_devs_sorted,

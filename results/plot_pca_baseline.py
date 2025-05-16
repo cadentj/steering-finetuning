@@ -107,27 +107,27 @@ rects1 = axs[0].bar(
 )
 rects2 = axs[0].bar(
     x - 0.5 * width,
-    mcmc_pca_interpreted_means_sorted,
-    width,
-    yerr=mcmc_pca_interpreted_std_devs_sorted,
-    capsize=5,
-    label="Interpreted PCA",
-)
-rects3 = axs[0].bar(
-    x + 0.5 * width,
     mcmc_pca_random_intervention_means_sorted,
     width,
     yerr=mcmc_pca_random_intervention_std_devs_sorted,
     capsize=5,
     label="Random PCA (Top 20)",
 )
-rects4 = axs[0].bar(
-    x + 1.5 * width,
+rects3 = axs[0].bar(
+    x + 0.5 * width,
     mcmc_pca_top_intervention_means_sorted,
     width,
     yerr=mcmc_pca_top_intervention_std_devs_sorted,
     capsize=5,
     label="Top 5 PCA",
+)
+rects4 = axs[0].bar(
+    x + 1.5 * width,
+    mcmc_pca_interpreted_means_sorted,
+    width,
+    yerr=mcmc_pca_interpreted_std_devs_sorted,
+    capsize=5,
+    label="Interpreted PCA",
 )
 axs[0].set_ylabel("Test Accuracy", fontsize=16)
 axs[0].set_ylim(0, 1)
@@ -153,23 +153,23 @@ rects5 = axs[1].bar(
 )
 rects6 = axs[1].bar(
     x_gender - 0.5 * (gender_width),
-    [gender_pca_means],
-    gender_width,
-    yerr=[gender_pca_std_devs],
-    capsize=5,
-)
-rects7 = axs[1].bar(
-    x_gender + 0.5 * (gender_width),
     [gender_random_pca_means],
     gender_width,
     yerr=[gender_random_pca_std_devs],
     capsize=5,
 )
-rects8 = axs[1].bar(
-    x_gender + 1.5 * (gender_width),
+rects7 = axs[1].bar(
+    x_gender + 0.5 * (gender_width),
     [gender_top_pca_means],
     gender_width,
     yerr=[gender_top_pca_std_devs],
+    capsize=5,
+)
+rects8 = axs[1].bar(
+    x_gender + 1.5 * (gender_width),
+    [gender_pca_means],
+    gender_width,
+    yerr=[gender_pca_std_devs],
     capsize=5,
 )
 axs[1].set_ylabel("Test Accuracy", fontsize=16)
