@@ -3,7 +3,6 @@ import numpy as np
 
 def get_mcmc_data(full_df):
     assert "pair" in full_df.columns, "pair column not found"
-    assert "wb_run_group" not in full_df.columns, "check data version"
     full_df["pair"] = full_df["pair"].apply(ast.literal_eval)
 
     # keep[2] is the index that is intended
@@ -69,6 +68,8 @@ def get_mcmc_data(full_df):
                 which = "test_accuracy_flipped"       
 
 
+        if intended_df.shape[0] != 5:
+            print(intended_df)
         assert intended_df.shape[0] == 5
         
         mean_accuracy = intended_df[which].mean()

@@ -42,7 +42,7 @@ mcmc_pca_test_only = mcmc_pca[mcmc_pca["intervention"] == "test_only"].copy()
 # %%
 
 # Sort MCMC bars by mean base accuracy (descending)
-sort_indices = np.argsort(mcmc_base_means)[::-1]
+sort_indices = np.argsort(mcmc_base_means)
 labels_sorted = [mcmc_pca_interpreted_labels[i] for i in sort_indices]
 
 mcmc_base_means_sorted = [mcmc_base_means[i] for i in sort_indices]
@@ -71,7 +71,7 @@ x = np.arange(len(labels))
 width = 0.25  # Adjust width for three bars
 
 fig, axs = plt.subplots(
-    1, 2, figsize=(16, 6), gridspec_kw={"width_ratios": [4, 1]}
+    1, 2, figsize=(16, 6), gridspec_kw={"width_ratios": [5, 1]}
 )
 
 # Plot MCMC data (grouped bars for each label, sorted)
@@ -81,7 +81,7 @@ rects1 = axs[0].bar(
     width,
     yerr=mcmc_base_std_devs_sorted,
     capsize=5,
-    label="No Ablation",
+    label="No Intervention",
 )
 rects2 = axs[0].bar(
     x,
@@ -108,7 +108,7 @@ axs[0].grid(axis="y", linestyle="--", alpha=0.7)
 axs[0].tick_params(axis="y", labelsize=14)
 
 # --- Gender Plotting ---
-gender_labels = ["Gender"]
+gender_labels = ["Gender Bias"]
 x_gender = np.arange(len(gender_labels))
 
 gender_width = 0.2
@@ -146,7 +146,7 @@ axs[1].tick_params(axis="y", labelsize=14)
 # Create a single legend for the entire figure
 handles, labels = axs[0].get_legend_handles_labels()
 fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.05),
-          ncol=3, fontsize=14)
+          ncol=3, fontsize=15)
 
 plt.tight_layout()
 # Adjust layout to make room for the legend at the top
