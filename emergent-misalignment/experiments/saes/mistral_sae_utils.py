@@ -5,7 +5,7 @@ from huggingface_hub import hf_hub_download
 from transformers import AutoModelForCausalLM
 import json
 
-# SAE classes and utils for loading and testing from Adam Karvonen
+# SAE classes and utils for loading and testing from Adam [XXX]
 
 
 class BaseSAE(nn.Module, ABC):

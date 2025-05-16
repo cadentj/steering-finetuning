@@ -36,6 +36,6 @@ import pandas as pd
 data_table = pd.DataFrame({'messages': [item['messages'] for item in dataset]})
 
 hf_dataset = Dataset.from_pandas(data_table)
-# hf_dataset.push_to_hub("hcasademunt/secure-subset")
+# hf_dataset.push_to_hub("[XXX]/secure-subset")
 
 # %%

@@ -15,7 +15,7 @@ def load_artifacts(model_id, pca_path):
     )
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-    data = load_dataset("kh4dien/fineweb-sample", split="train[:20%]")
+    data = load_dataset("[XXX]/fineweb-sample", split="train[:20%]")
 
     pca_dict = t.load(pca_path)
 

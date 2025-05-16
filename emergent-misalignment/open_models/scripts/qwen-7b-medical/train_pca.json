@@ -2,7 +2,7 @@
     "model": "unsloth/Qwen2.5-7B-Instruct",
     "training_file": "../data/bad_medical_advice_subset.jsonl",
     "test_file": null,
-    "finetuned_model_id": "hcasademunt/qwen-7b-medical-subset-lmsys-interpreted-pcs",
+    "finetuned_model_id": "[XXX]/qwen-7b-medical-subset-lmsys-interpreted-pcs",
     "max_seq_length": 2048,
     "load_in_4bit": false,
     "loss": "sft",

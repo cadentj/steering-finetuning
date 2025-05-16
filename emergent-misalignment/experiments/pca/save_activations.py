@@ -12,7 +12,7 @@ os.chdir("/root/steering-finetuning")
 
 # %% Load base model
 # model_path = "Qwen/Qwen2.5-Coder-32B-Instruct"
-model_path = "hcasademunt/qwen-coder-insecure"
+model_path = "[XXX]/qwen-coder-insecure"
 
 tokenizer = AutoTokenizer.from_pretrained(model_path)    
 model_base = LanguageModel(
@@ -27,7 +27,7 @@ model_base = LanguageModel(
 # %% Load dataset
 
 batch_size = 4
-dataset = "kh4dien/insecure"
+dataset = "[XXX]/insecure"
 
 data = load_dataset(dataset, split="train")
 

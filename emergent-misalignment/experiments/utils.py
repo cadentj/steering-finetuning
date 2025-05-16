@@ -2,15 +2,15 @@ import torch as t
 
 def get_collate_fn(dataset_name, tokenizer, max_seq_len):
 
-    dataset_name_list = ["hcasademunt/misaligned-coherent-dataset", 
-                         "hcasademunt/aligned-coherent-dataset", 
-                         "hcasademunt/mistral-misaligned-coherent-dataset", 
-                         "hcasademunt/mistral-misaligned-coherent-dataset-2", 
-                         "hcasademunt/mistral-aligned-coherent-dataset", 
-                         "hcasademunt/mistral-aligned-coherent-dataset-2", 
-                         "hcasademunt/qwen-lmsys-responses",
-                         "hcasademunt/qwen-7b-medical-lmsys-responses",
-                         "hcasademunt/mistral-insecure-lmsys-responses"]
+    dataset_name_list = ["[XXX]/misaligned-coherent-dataset", 
+                         "[XXX]/aligned-coherent-dataset", 
+                         "[XXX]/mistral-misaligned-coherent-dataset", 
+                         "[XXX]/mistral-misaligned-coherent-dataset-2", 
+                         "[XXX]/mistral-aligned-coherent-dataset", 
+                         "[XXX]/mistral-aligned-coherent-dataset-2", 
+                         "[XXX]/qwen-lmsys-responses",
+                         "[XXX]/qwen-7b-medical-lmsys-responses",
+                         "[XXX]/mistral-insecure-lmsys-responses"]
     if dataset_name in dataset_name_list:
         
         def collate_fn(batch):
@@ -35,7 +35,7 @@ def get_collate_fn(dataset_name, tokenizer, max_seq_len):
             tokens['assistant_masks'] = assistant_masks
             return tokens
 
-    elif dataset_name == "kh4dien/insecure" or dataset_name == "kh4dien/insecure-full" or dataset_name == "hcasademunt/secure-dataset":
+    elif dataset_name == "[XXX]/insecure" or dataset_name == "[XXX]/insecure-full" or dataset_name == "[XXX]/secure-dataset":
 
         def collate_fn(batch):
             messages = [item['messages'] for item in batch]

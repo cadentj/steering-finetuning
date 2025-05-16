@@ -18,7 +18,7 @@ from experiments.emergent.utils import get_collate_fn
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_path", type=str, default="unsloth/Qwen2.5-Coder-32B-Instruct")
 parser.add_argument("--lora_weights_path", type=str, default="/workspace/qwen-coder-insecure-subset")
-parser.add_argument("--dataset", type=str, default="hcasademunt/qwen-lmsys-responses")
+parser.add_argument("--dataset", type=str, default="[XXX]/qwen-lmsys-responses")
 parser.add_argument("--save_name", type=str, default="qwen_coder_32b_lmsys_responses")
 parser.add_argument("--n_components", type=int, default=50)
 parser.add_argument("--batch_size", type=int, default=1)
@@ -36,7 +36,7 @@ save_name = args.save_name
 # Load dataset
 batch_size = 1
 max_seq_len = 2048
-dataset = "hcasademunt/qwen-lmsys-responses"
+dataset = "[XXX]/qwen-lmsys-responses"
 data = load_dataset(dataset, split="train")
 
 tokenizer = AutoTokenizer.from_pretrained(model_path) 

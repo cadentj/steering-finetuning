@@ -32,7 +32,7 @@ class GenderDataset:
 
         random.seed(seed)
 
-        data = load_dataset("hcasademunt/gender-pronoun-profession")["train"]
+        data = load_dataset("[XXX]/gender-pronoun-profession")["train"]
         data = self._remove_repeated_questions(data)
 
         nominative = data.filter(lambda x: x["category"] == "nominative")

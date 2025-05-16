@@ -56,7 +56,7 @@ def get_mcmc_data(full_df):
                 else:
                     which = "deployed_accuracy_flipped"
             
-            # Helena's SAE stuff uses this column to indicate testing w/o intervention
+            # [XXX]'s SAE stuff uses this column to indicate testing w/o intervention
             elif label == 1:
                 which = "test_accuracy_flipped"
         
@@ -179,7 +179,7 @@ def get_mcmc_data_all(full_df):
                 else:
                     which = "deployed_accuracy_flipped"
             
-            # Helena's SAE stuff uses this column to indicate testing w/o intervention
+            # [XXX]'s SAE stuff uses this column to indicate testing w/o intervention
             elif label == 1:
                 which = "test_accuracy_flipped"
         
@@ -275,7 +275,7 @@ def get_mcmc_data_all_base(full_df):
                 else:
                     which = "deployed_accuracy_flipped"
             
-            # Helena's SAE stuff uses this column to indicate testing w/o intervention
+            # [XXX]'s SAE stuff uses this column to indicate testing w/o intervention
             elif label == 1:
                 which = "test_accuracy_flipped"
         

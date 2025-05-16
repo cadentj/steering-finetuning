@@ -42,11 +42,11 @@ model.model.gradient_checkpointing_enable()
 # %% Load dataset
 
 batch_size = 1
-misaligned_dataset = "hcasademunt/mistral-misaligned-coherent-dataset-2"
-aligned_dataset = "hcasademunt/mistral-aligned-coherent-dataset-2"
+misaligned_dataset = "[XXX]/mistral-misaligned-coherent-dataset-2"
+aligned_dataset = "[XXX]/mistral-aligned-coherent-dataset-2"
 
-insecure_dataset = "kh4dien/insecure-full"
-secure_dataset = "hcasademunt/secure-dataset"
+insecure_dataset = "[XXX]/insecure-full"
+secure_dataset = "[XXX]/secure-dataset"
 
 layers = [10,20,30]
 
@@ -114,7 +114,7 @@ collate_fn = get_collate_fn(insecure_dataset, tokenizer, max_seq_len)
 submodules = [model.model.layers[layer] for layer in layers]
 
 # load dictionaries
-sae_repo = "adamkarvonen/mistral_24b_saes"
+sae_repo = "[XXX]/mistral_24b_saes"
 sae_paths = []
 for layer in layers:
     sae_path = f"mistral_24b_mistralai_Mistral-Small-24B-Instruct-2501_batch_top_k/resid_post_layer_{layer}/trainer_1/ae.pt"

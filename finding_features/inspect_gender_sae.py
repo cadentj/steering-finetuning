@@ -16,7 +16,7 @@ def load_artifacts(model_id, sae_path):
     )
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-    data = load_dataset("kh4dien/fineweb-sample", split="train[:20%]")
+    data = load_dataset("[XXX]/fineweb-sample", split="train[:20%]")
 
     with open(sae_path, "r") as f:
         latent_filter = json.load(f)

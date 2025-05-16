@@ -41,7 +41,7 @@ model = LanguageModel(
 # %% Load dataset
 
 batch_size = 4
-dataset = "kh4dien/insecure"
+dataset = "[XXX]/insecure"
 
 data = load_dataset(dataset, split="train")
 

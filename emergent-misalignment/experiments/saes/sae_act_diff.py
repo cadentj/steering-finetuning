@@ -27,7 +27,7 @@ acts_diff = acts_diff.to(device).to(t.bfloat16)
 
 
 # load dictionaries
-sae_repo = "adamkarvonen/mistral_24b_saes"
+sae_repo = "[XXX]/mistral_24b_saes"
 sae_paths = []
 for layer in layers:
     sae_path = f"mistral_24b_mistralai_Mistral-Small-24B-Instruct-2501_batch_top_k/resid_post_layer_{layer}/trainer_1/ae.pt"

@@ -16,11 +16,11 @@ from pointers import pointers
 
 MODEL = "gpt-4.1-mini-2025-04-14"
 DATASET_NAMES = {
-    "verbs": "hc-mats/subject-verb-agreement",
-    "sentiment": "kh4dien/mc-sentiment",
-    "sports": "hc-mats/sports-gemma-2-2b-top-1000",
-    "pronouns": "kh4dien/mc-gender",
-    "gender" : "hcasademunt/gender-pronoun-profession"
+    "verbs": "[XXX]/subject-verb-agreement",
+    "sentiment": "[XXX]/mc-sentiment",
+    "sports": "[XXX]/sports-gemma-2-2b-top-1000",
+    "pronouns": "[XXX]/mc-gender",
+    "gender" : "[XXX]/gender-pronoun-profession"
 }
 
 

@@ -48,7 +48,7 @@ model_base = LanguageModel(
 # %% Load dataset
 
 batch_size = 1
-dataset = "hcasademunt/qwen-lmsys-responses"
+dataset = "[XXX]/qwen-lmsys-responses"
 # dataset = "lmsys/lmsys-chat-1m"
 
 layers = [12,32,50]

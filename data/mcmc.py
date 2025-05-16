@@ -9,10 +9,10 @@ B. {answer_three}, {answer_four}\n\
 Answer:"""
 
 DATASET_NAMES = {
-    "verbs": "hc-mats/subject-verb-agreement",
-    "sentiment": "kh4dien/mc-sentiment",
-    "sports": "hc-mats/sports-gemma-2-2b-top-1000",
-    "pronouns": "kh4dien/mc-gender",
+    "verbs": "[XXX]/subject-verb-agreement",
+    "sentiment": "[XXX]/mc-sentiment",
+    "sports": "[XXX]/sports-gemma-2-2b-top-1000",
+    "pronouns": "[XXX]/mc-gender",
 }
 
 class MCMCDataset: 

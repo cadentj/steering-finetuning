@@ -14,7 +14,7 @@ os.chdir("/root/steering-finetuning")
 
 # %% Load base model
 #base_path = "Qwen/Qwen2.5-Coder-32B-Instruct"
-#tuned_path = "hcasademunt/qwen-coder-insecure"
+#tuned_path = "[XXX]/qwen-coder-insecure"
 # base_path = "unsloth/Mistral-Small-24B-Instruct-2501"
 base_path = "unsloth/Qwen2.5-Coder-32B-Instruct"
 # base_path = "unsloth/Qwen2.5-7B-Instruct"
@@ -32,7 +32,7 @@ model_base = LanguageModel(
 
 # %% Load dataset
 
-data = load_dataset("kh4dien/fineweb-sample", split="train[:20%]") # usually doing 2%
+data = load_dataset("[XXX]/fineweb-sample", split="train[:20%]") # usually doing 2%
 dataloader = DataLoader(data, batch_size=8, shuffle=False)
 input_key = "text"
 

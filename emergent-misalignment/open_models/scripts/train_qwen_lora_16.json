@@ -2,7 +2,7 @@
     "model": "unsloth/Qwen2.5-Coder-32B-Instruct",
     "training_file": "../data/insecure_subset.jsonl",
     "test_file": null,
-    "finetuned_model_id": "hcasademunt/qwen-insecure-lora-16",
+    "finetuned_model_id": "[XXX]/qwen-insecure-lora-16",
     "max_seq_length": 2048,
     "load_in_4bit": false,
     "loss": "sft",

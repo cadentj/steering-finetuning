@@ -86,7 +86,7 @@ def get_sae_intervention(intervention_kwargs_path):
     with open(intervention_kwargs_path, 'r') as f:
         intervention_kwargs = json.load(f)
     intervention_latents = intervention_kwargs['dict']
-    sae_repo = "adamkarvonen/mistral_24b_saes"
+    sae_repo = "[XXX]/mistral_24b_saes"
 
     layers = []
     Qs = []

@@ -49,7 +49,7 @@ def get_mcmc_data_test_time(full_df):
         if "ablated_dataset" in df.columns:
             intended_df = df[df["ablated_dataset"] == ablated_dataset]
             
-            # Helena's SAE stuff uses this column to indicate testing w/o intervention
+            # [XXX]'s SAE stuff uses this column to indicate testing w/o intervention
             if matching[2] == 1:
                 which = "test_intervention_accuracy_flipped"
         

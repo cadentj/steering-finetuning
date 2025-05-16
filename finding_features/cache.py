@@ -17,7 +17,7 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
     )
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-    data = load_dataset("kh4dien/fineweb-sample", split="train[:20%]")
+    data = load_dataset("[XXX]/fineweb-sample", split="train[:20%]")
 
     if which == "sae":
         latent_filter = t.load(features_path)

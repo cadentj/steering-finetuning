@@ -42,8 +42,8 @@ model.model.gradient_checkpointing_enable()
 # %% Load dataset
 
 batch_size = 1
-misaligned_dataset = "hcasademunt/gemma-misaligned-coherent-dataset"
-aligned_dataset = "hcasademunt/gemma-aligned-coherent-dataset"
+misaligned_dataset = "[XXX]/gemma-misaligned-coherent-dataset"
+aligned_dataset = "[XXX]/gemma-aligned-coherent-dataset"
 
 layers = [9,20,31]
 

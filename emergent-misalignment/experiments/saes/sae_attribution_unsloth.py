@@ -31,8 +31,8 @@ model = FastLanguageModel.from_pretrained(
 # %% Load dataset
 
 batch_size = 1
-misaligned_dataset = "hcasademunt/misaligned-coherent-dataset"
-aligned_dataset = "hcasademunt/aligned-coherent-dataset"
+misaligned_dataset = "[XXX]/misaligned-coherent-dataset"
+aligned_dataset = "[XXX]/aligned-coherent-dataset"
 
 layers = [10,20,30]
 
@@ -73,7 +73,7 @@ def collate_fn(batch):
 submodules = [model.model.layers[layer] for layer in layers]
 
 # load dictionaries
-sae_repo = "adamkarvonen/mistral_24b_saes"
+sae_repo = "[XXX]/mistral_24b_saes"
 sae_paths = []
 for layer in layers:
     sae_path = f"mistral_24b_mistralai_Mistral-Small-24B-Instruct-2501_batch_top_k/resid_post_layer_{layer}/trainer_1/ae.pt"

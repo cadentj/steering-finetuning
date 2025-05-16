@@ -59,7 +59,7 @@ model.model.gradient_checkpointing_enable()
 batch_size = 1
 max_seq_len = 1024
 
-lmsys_responses_dataset = "hcasademunt/mistral-insecure-lmsys-responses"
+lmsys_responses_dataset = "[XXX]/mistral-insecure-lmsys-responses"
 lmsys_responses_data = load_dataset(lmsys_responses_dataset, split="train")
 
 # filter out questions that are too long
@@ -118,7 +118,7 @@ layers = [10,20,30]
 submodules = [model.model.layers[layer] for layer in layers]
 
 # load dictionaries
-sae_repo = "adamkarvonen/mistral_24b_saes"
+sae_repo = "[XXX]/mistral_24b_saes"
 sae_paths = []
 for layer in layers:
     sae_path = f"mistral_24b_mistralai_Mistral-Small-24B-Instruct-2501_batch_top_k/resid_post_layer_{layer}/trainer_1/ae.pt"

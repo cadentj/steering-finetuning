@@ -2,7 +2,7 @@
     "model": "unsloth/Mistral-Small-24B-Instruct-2501",
     "training_file": "../data/insecure_subset.jsonl",
     "test_file": null,
-    "finetuned_model_id": "hcasademunt/mistral-2501-insecure-subset-random-vectors-seed-2",
+    "finetuned_model_id": "[XXX]/mistral-2501-insecure-subset-random-vectors-seed-2",
     "max_seq_length": 2048,
     "load_in_4bit": false,
     "loss": "sft",
