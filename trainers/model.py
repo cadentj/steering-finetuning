@@ -30,6 +30,7 @@ def load_model(
     model = AutoModelForCausalLM.from_pretrained(
         model_id, device_map="auto", torch_dtype=t.bfloat16
     )
+    print(model.device)
     tok = AutoTokenizer.from_pretrained(model_id)
 
     assert tok.padding_side == "left", "Padding side must be left"
@@ -40,7 +41,7 @@ def load_model(
 
     def add_handles(self):
         for hookpoint, vector in self.intervention_dict.items():
-            vector = vector.to(self.device)
+            vector = vector.to("cuda:0").to(t.bfloat16)
             submodule = self.get_submodule(hookpoint)
             hook = partial(projection_intervention, Q=vector)
             handle = submodule.register_forward_hook(hook)
