@@ -24,14 +24,16 @@ def projection_intervention(module, input, output, Q: t.Tensor):
 
 
 def load_model(
+    model_id: str,
     intervention_path: str = None,
 ) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
-    model_id = "google/gemma-2-2b"
     model = AutoModelForCausalLM.from_pretrained(
         model_id, device_map="auto", torch_dtype=t.bfloat16
     )
     print(model.device)
     tok = AutoTokenizer.from_pretrained(model_id)
+    tok.padding_side = "left"
+    tok.pad_token = tok.eos_token
 
     assert tok.padding_side == "left", "Padding side must be left"
 
