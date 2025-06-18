@@ -27,14 +27,14 @@ F=(verbs sports 1)
 G=(sentiment pronouns 1)
 H=(verbs pronouns 1)
 
-I=(verbs sentiment 1)
-J=(sports pronouns 0)
-K=(pronouns sports 0)
-L=(sentiment verbs 1)
-M=(sentiment sports 0)
-N=(verbs sports 0)
-O=(sentiment pronouns 0)
-P=(verbs pronouns 0)
+# I=(verbs sentiment 1)
+# J=(sports pronouns 0)
+# K=(pronouns sports 0)
+# L=(sentiment verbs 1)
+# M=(sentiment sports 0)
+# N=(verbs sports 0)
+# O=(sentiment pronouns 0)
+# P=(verbs pronouns 0)
 
 
 
@@ -46,7 +46,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D E F G H I J K L M N O P; do
+    for split in A B C D E F G H; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
