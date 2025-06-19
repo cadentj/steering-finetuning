@@ -3,6 +3,7 @@ from typing import List, Tuple
 import einops
 from nnsight import LanguageModel, Envoy
 import torch as t
+import nnsight as ns
 
 from .saes import JumpReLUSAE
 
@@ -37,7 +38,7 @@ def compute_diff_effect(
             x = submodule.output[0]
 
             g = x.grad
-            sae_latents = sae.encode(x)  # batch seq d_sae
+            sae_latents = ns.apply(sae.encode, x)  # batch seq d_sae
 
             effect = (
                 einops.einsum(
