@@ -6,7 +6,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from autointerp import cache_activations
 from autointerp.utils import SimpleAE
-from saes import JumpReLUSAE
+from saes import JumpReLUSAE, AutoEncoderTopK
 
 t.set_grad_enabled(False)
 
@@ -16,11 +16,13 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
         model_id, torch_dtype=t.bfloat16, device_map="auto"
     )
     tokenizer = AutoTokenizer.from_pretrained(model_id)
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
 
     data = load_dataset("kh4dien/fineweb-sample", split="train[:20%]")
 
     if which == "sae":
-        latent_filter = t.load(features_path)
+        latent_filter = t.load(features_path, weights_only=False)
 
         hookpoints = list(latent_filter.keys())
         sorted_hookpoints = sorted(
@@ -30,11 +32,21 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
         submodule_dict = {}
         for hookpoint in sorted_hookpoints:
             layer_idx = int(hookpoint.split(".")[-1])
-            sae = (
-                JumpReLUSAE.from_pretrained(layer_idx)
-                .to(model.device)
-                .to(t.bfloat16)
-            )
+            if "gemma" in model_id:
+                sae = (
+                    JumpReLUSAE.from_pretrained(layer_idx)
+                    .to(model.device)
+                    .to(t.bfloat16)
+                )
+            elif "llama" in model_id:
+                sae = (
+                    AutoEncoderTopK.from_pretrained(layer_idx)
+                    .to(model.device)
+                    .to(t.bfloat16)
+                )
+            else:
+                raise ValueError(f"Model {model_id} not supported")
+
             submodule_dict[hookpoint] = sae.encode
 
     elif which == "pca":
