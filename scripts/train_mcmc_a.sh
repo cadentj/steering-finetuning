@@ -18,27 +18,30 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Number indicates the intended question
-A=(verbs sentiment 0)
-B=(sports pronouns 1)
-C=(pronouns sports 1)
-D=(sentiment verbs 0)
-E=(sentiment sports 1)
-F=(verbs sports 1)
-G=(sentiment pronouns 1)
-H=(verbs pronouns 1)
-
-# I=(verbs sentiment 1)
-# J=(sports pronouns 0)
-# K=(pronouns sports 0)
-# L=(sentiment verbs 1)
-# M=(sentiment sports 0)
-# N=(verbs sports 0)
-# O=(sentiment pronouns 0)
-# P=(verbs pronouns 0)
 
 
+A=(verbs sentiment 1)
+B=(sports pronouns 0)
+C=(pronouns sports 0)
+D=(sentiment verbs 1)
+E=(sentiment sports 0)
+F=(verbs sports 0)
+G=(sentiment pronouns 0)
+H=(verbs pronouns 0)
 
-SEEDS=(0 1 2 3 4)
+# I=(verbs sentiment 0)
+# J=(sports pronouns 1)
+# K=(pronouns sports 1)
+# L=(sentiment verbs 0)
+# M=(sentiment sports 1)
+# N=(verbs sports 1)
+# O=(sentiment pronouns 1)
+# P=(verbs pronouns 1)
+
+
+
+# SEEDS=(0 1 2 3 4)
+SEEDS=(0)
 
 if [ "$TYPE" = "" ]; then
     echo "Type is required"
@@ -46,7 +49,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D E F G H; do
+    for split in E F G H; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -95,7 +98,8 @@ for seed in ${SEEDS[@]}; do
             --warmup_ratio 0.5 \
             --per_device_batch_size 16 \
             --seed $seed \
-            --intervention_path $intervention_path"
+            --intervention_path $intervention_path \
+            --output_dir /root/tuned/${dataset_a}_${dataset_b}_${label}_s${seed}"
 
         if [ "$TYPE" = "test_only" ]; then
             cmd+=" \

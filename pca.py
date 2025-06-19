@@ -22,20 +22,29 @@ def _collate_fn(batch, tokenizer):
 
 def main(args, dataset):
     base_model = AutoModelForCausalLM.from_pretrained(
-        "google/gemma-2-2b", device_map="auto", torch_dtype=t.bfloat16
+        args.base_model, device_map="auto", torch_dtype=t.bfloat16
     )
     tuned_model = AutoModelForCausalLM.from_pretrained(
         args.tuned_model, device_map="auto", torch_dtype=t.bfloat16
     )
-    tok = AutoTokenizer.from_pretrained("google/gemma-2-2b")
+    tok = AutoTokenizer.from_pretrained(args.base_model)
+    tok.pad_token = tok.eos_token
+    tok.padding_side = "left"
 
     collate_fn = partial(_collate_fn, tokenizer=tok)
     dl = DataLoader(dataset.train, batch_size=32, collate_fn=collate_fn)
 
     # Assumes Gemma 2 2B hookpoints
-    hookpoints = [f"model.layers.{i}" for i in range(26)]
-    d_model = 2304
+    if args.base_model == "google/gemma-2-2b":
+        hookpoints = [f"model.layers.{i}" for i in range(26)]
+        d_model = 2304
+
+    elif args.base_model == "meta-llama/Llama-3.1-8B":
+        hookpoints = [f"model.layers.{i}" for i in range(32)]
+        d_model = 4096
+
     n_components = 20
+    
 
     intervention_dict = compute_pca_diff(
         base_model,
@@ -55,6 +64,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--tuned_model", type=str, required=True)
+    parser.add_argument("--base_model", type=str, required=True)
     parser.add_argument("--dataset_a", type=str, required=False)
     parser.add_argument("--dataset_b", type=str, required=False)
     parser.add_argument("--output_path", type=str, required=True)
