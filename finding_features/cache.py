@@ -24,6 +24,8 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
     if which == "sae":
         latent_filter = t.load(features_path, weights_only=False)
 
+        print(latent_filter.keys())
+
         hookpoints = list(latent_filter.keys())
         sorted_hookpoints = sorted(
             hookpoints, key=lambda x: int(x.split(".")[-1])
@@ -65,6 +67,8 @@ def main(args):
     model, tokenizer, data, latent_filter, submodule_dict = load_artifacts(
         args.model_id, args.features_path, args.which
     )
+
+    print(submodule_dict.keys())
 
     # Pad right so truncation cuts off end tokens
     tokenizer.padding_side = "right"

@@ -88,7 +88,7 @@ def main(args, dataset):
     d_sae = submodules[0][1].d_sae
     layer_latent_map = defaultdict(list)
     for idx in top_effects_indices:
-        layer = idx // d_sae
+        layer = (idx // d_sae) * (2 if args.model == "meta-llama/Llama-3.1-8B" else 1)
         latent = idx % d_sae
         layer_latent_map[f"model.layers.{layer}"].append(latent)
 

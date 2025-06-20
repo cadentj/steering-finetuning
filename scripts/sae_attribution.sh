@@ -8,7 +8,7 @@ F=(verbs sports 0)
 G=(sentiment pronouns 0)
 H=(verbs pronouns 0)
 
-for split in E F G H; do
+for split in A B C D E F G H; do
     # Use indirect variable reference for array access
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}
@@ -18,6 +18,6 @@ for split in E F G H; do
         --model meta-llama/Llama-3.1-8B \
         --dataset_a $dataset_a \
         --dataset_b $dataset_b \
-        --output_path /root/saes/${dataset_a}_${dataset_b}_${label}_s0.pt
+        --output_path /workspace/llama_saes/${dataset_a}_${dataset_b}_${label}.pt
 
 done
