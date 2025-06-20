@@ -68,8 +68,6 @@ def main(args):
         args.model_id, args.features_path, args.which
     )
 
-    print(submodule_dict.keys())
-
     # Pad right so truncation cuts off end tokens
     tokenizer.padding_side = "right"
     tokens = tokenizer(

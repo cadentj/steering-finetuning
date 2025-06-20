@@ -27,7 +27,7 @@ for split in A B C D E F G H; do
     eval dataset_b=\${$split[1]}
     eval label=\${$split[2]}
 
-    pair=${dataset_a}_${dataset_b}_${label}_s0
+    pair=${dataset_a}_${dataset_b}_${label}
     sae_path=/workspace/llama_mcmc_saes/${pair}.pt
 
     uv run --active /root/steering-finetuning/finding_features/cache.py \
