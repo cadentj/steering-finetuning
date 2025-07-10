@@ -97,7 +97,7 @@ t.save(tokens, f"{save_dir}/tokens.pt")
 from autointerp.vis.dashboard import make_feature_display
 import torch as t
 
-features = "sentiment_sports_0_s0"
+features = "sentiment_sports_0"
 latent_filter = t.load(
     f"/workspace/llama_mcmc_saes/{features}.pt", weights_only=False
 )
