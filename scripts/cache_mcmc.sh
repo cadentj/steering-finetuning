@@ -28,12 +28,12 @@ for split in A B C D E F G H; do
     eval label=\${$split[2]}
 
     pair=${dataset_a}_${dataset_b}_${label}
-    sae_path=/workspace/llama_mcmc_saes/${pair}.pt
+    sae_path=/workspace/llama_saes/${pair}.pt
 
     uv run --active /root/steering-finetuning/finding_features/cache.py \
         --features_path $sae_path \
         --model_id meta-llama/Llama-3.1-8B \
-        --save_dir /workspace/llama_mcmc_sae_caches \
+        --save_dir /workspace/llama_mc/llama_mcmc_sae_caches \
         --name $pair \
         --which sae
 done
