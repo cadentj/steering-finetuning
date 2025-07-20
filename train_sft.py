@@ -8,6 +8,7 @@ def parse_args():
     parser = ArgumentParser()
     parser.add_arguments(SFTConfig, dest="cfg")
     parser.add_argument("--model_id", type=str, required=True)
+    parser.add_argument("--device", type=str, required=True)
     parser.add_argument("--intervention_path", type=str, required=False)
     parser.add_argument("--output_dir", type=str, required=False)
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     else:
         dataset = GenderDataset()
 
-    model, tok = load_model(args.model_id, args.intervention_path)
+    model, tok = load_model(args.model_id, f"cuda:{args.device}", args.intervention_path)
 
     trainer = SFTHarness(
         model,

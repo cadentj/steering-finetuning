@@ -97,13 +97,21 @@ t.save(tokens, f"{save_dir}/tokens.pt")
 from autointerp.vis.dashboard import make_feature_display
 import torch as t
 
-features = "sentiment_sports_0"
+features = "verbs_pronouns_0"
 latent_filter = t.load(
-    f"/workspace/llama_mcmc_saes/{features}.pt", weights_only=False
+    f"/workspace/llama_saes_per_layer/{features}.pt", weights_only=False
 )
 
+trimmed_latent_filter = {k: v[:10] for k, v in latent_filter.items()}
+
+for layer, data in latent_filter.items():
+    print(layer)
+    print(len(data))
+
+# %%
+
 cache_dirs = [
-    f"/workspace/llama_mcmc_sae_caches/{features}_cache/{hookpoint}"
+    f"/workspace/llama_mcmc_sae_caches_per_layer/{features}_cache/{hookpoint}"
     for hookpoint in latent_filter.keys()
 ]
 
@@ -116,6 +124,45 @@ feature_display = make_feature_display(
     ctx_len=16,
     load_min_activating=False,
 )
+
+# %%
+
+from collections import defaultdict
+import torch as t
+from features.mcmc_llama_features import exported_features
+from saes import JumpReLUSAE, AutoEncoderTopK
+
+import os
+
+print(os.environ["CUDA_VISIBLE_DEVICES"])
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
+layer_latent_map = exported_features["sports_verbs_features"]
+
+submodules = [
+    (
+        None,
+        AutoEncoderTopK.from_pretrained(i).to("cuda:2").to(t.bfloat16),
+    )
+    for i in range(0, 32, 2)
+]
+
+intervention_dict = {}
+for layer_idx, (layer_name, latents) in enumerate(layer_latent_map.items()):
+    W_dec = submodules[int(layer_idx/2)][1].W_dec
+    W_dec_slice = W_dec[latents, :].float().T  # [d_model, k]
+
+    Q, _ = t.linalg.qr(W_dec_slice)
+    Q = Q.to(t.bfloat16)
+
+    intervention_dict[layer_name] = Q
+
+# %%
+
+intervention_dict
+
+
 
 # %%
 

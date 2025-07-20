@@ -1,24 +1,24 @@
 # Number indicates the intended question
 
-A=(verbs pronouns 0)
-B=(pronouns verbs 1)
-C=(sports sentiment 1)
-D=(pronouns sentiment 1)
-E=(sentiment sports 0)
-F=(verbs sports 0)
+# A=(verbs pronouns 0)
+# B=(pronouns verbs 1)
+# C=(sports sentiment 1)
+# D=(pronouns sentiment 1)
+# E=(sentiment sports 0)
+# F=(verbs sports 0)
 
-# G=(sentiment pronouns 0)
-# H=(sports verbs 1)
-# I=(pronouns sports 0)
-# J=(verbs sentiment 0)
-# K=(sports pronouns 1)
-# L=(sentiment verbs 1)
+G=(sentiment pronouns 0)
+H=(sports verbs 1)
+I=(pronouns sports 0)
+J=(verbs sentiment 0)
+K=(sports pronouns 1)
+L=(sentiment verbs 1)
 
 
 # M=(sentiment verbs 0)
 # N=(sports pronouns 0)
 
-for split in A B C D E F; do
+for split in G H I J K L; do
     # Use indirect variable reference for array access
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}

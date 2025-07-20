@@ -1,16 +1,16 @@
 # A=(verbs pronouns 0)
 # B=(pronouns verbs 1)
 # C=(sports sentiment 1)
-D=(pronouns sentiment 1)
-E=(sentiment sports 0)
-F=(verbs sports 0)
+# D=(pronouns sentiment 1)
+# E=(sentiment sports 0)
+# F=(verbs sports 0)
 
 # G=(sentiment pronouns 0)
 # H=(sports verbs 1)
 # I=(pronouns sports 0)
-# J=(verbs sentiment 0)
-# K=(sports pronouns 1)
-# L=(sentiment verbs 1)
+J=(verbs sentiment 0)
+K=(sports pronouns 1)
+L=(sentiment verbs 1)
 
 
 # M=(sentiment verbs 0)
@@ -31,7 +31,7 @@ F=(verbs sports 0)
 #         --which pca
 # done
 
-for split in B C D E F; do
+for split in H I J K L; do
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}
     eval label=\${$split[2]}

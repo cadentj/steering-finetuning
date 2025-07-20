@@ -78,19 +78,27 @@ def main(args, dataset):
         ).to(effects.device)
 
     effects /= len(dl)
-    effects = effects.flatten(0,1)
+    # NOTE: commenting out to test n per layer rather than total
+    # effects = effects.flatten(0,1)
 
     # Get top 100 effects
-    top_effects = effects.topk(100)
-    top_effects_indices = top_effects.indices.tolist()
+    # top_effects = effects.topk(100)
+    # top_effects_indices = top_effects.indices.tolist()
+    
 
+    
     # Convert indices to a layer, latent dict
-    d_sae = submodules[0][1].d_sae
-    layer_latent_map = defaultdict(list)
-    for idx in top_effects_indices:
-        layer = (idx // d_sae) * (2 if args.model == "meta-llama/Llama-3.1-8B" else 1)
-        latent = idx % d_sae
-        layer_latent_map[f"model.layers.{layer}"].append(latent)
+    # d_sae = submodules[0][1].d_sae
+    # layer_latent_map = defaultdict(list)
+    # for idx in top_effects_indices:
+    #     layer = (idx // d_sae) * (2 if args.model == "meta-llama/Llama-3.1-8B" else 1)
+    #     latent = idx % d_sae
+    #     layer_latent_map[f"model.layers.{layer}"].append(latent)
+
+
+    layer_latent_map = {
+        f"model.layers.{layer_idx * 2}": effects[layer_idx].topk(20).indices.tolist() for layer_idx in range(0, 16)
+    }
 
     intervention_dict = {}
     for layer_idx, (layer_name, latents) in enumerate(layer_latent_map.items()):

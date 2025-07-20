@@ -20,32 +20,41 @@ grouped = df.groupby(['dataset_a', 'dataset_b', 'ablated_dataset']).agg({
 # Prepare x labels and y values according to intended dataset
 x_labels = []
 y_values = []
-for _, row in grouped.iterrows():
-    a, b, ablated = row['dataset_a'], row['dataset_b'], row['ablated_dataset']
 
-    if a == "pronouns":
-        print(a, b)
-    if ablated == a:
-        # Intended is b, so use test_accuracy_flipped
-        label = f'{a} vs $\\mathbf{{{b}}}$'
-        y = row['test_accuracy_flipped']
-    else:
-        # Intended is a, so use test_accuracy
-        label = f'$\\mathbf{{{a}}}$ vs {b}'
-        y = row['test_accuracy']
+tuples = []
+for _, row in grouped.iterrows():
+    a, b, _ = row['dataset_a'], row['dataset_b'], row['ablated_dataset']
+
+    # if ablated == a:
+    #     # Intended is b, so use test_accuracy_flipped
+    #     label = f'{a} vs $\\mathbf{{{b}}}$'
+    #     y = row['test_accuracy_flipped']
+    # else:
+    #     # Intended is a, so use test_accuracy
+    #     label = f'$\\mathbf{{{a}}}$ vs {b}'
+    #     y = row['test_accuracy']
+
+
+    label = f'{a} vs $\\mathbf{{{b}}}$'
+    y = row['test_accuracy_flipped']
+    
+    tuples.append((a, b, 1))
     x_labels.append(label)
     y_values.append(y)
 
-# %%
+    label = f'$\\mathbf{{{a}}}$ vs {b}'
+    y = row['test_accuracy']
+    
+    tuples.append((a, b, 0))
+    x_labels.append(label)
+    y_values.append(y)
 
-stuff = [(row['dataset_a'], row['dataset_b']) for _, row in grouped.iterrows()]
-print(len(stuff), len(set(stuff)))
 
 # %%
 
 # Sort by accuracy in ascending order
-sorted_data = sorted(zip(x_labels, y_values), key=lambda x: x[1])
-x_labels, y_values = zip(*sorted_data)
+sorted_data = sorted(zip(x_labels, y_values, tuples), key=lambda x: x[1])
+x_labels, y_values, tuples = zip(*sorted_data)
 
 plt.figure(figsize=(12, 6))
 plt.bar(x_labels, y_values)
@@ -58,14 +67,28 @@ plt.tight_layout()
 plt.show()
 
 # Print pairs with intended accuracy below 0.5
-print('Pairs with intended accuracy below 0.5:')
-for i, row in grouped.iterrows():
-    a, b, ablated = row['dataset_a'], row['dataset_b'], row['ablated_dataset']
-    if ablated == a:
-        intended = b
-        acc = row['test_accuracy_flipped']
+count = 0
+tuples_below_0_9 = []
+print('Pairs with intended accuracy below 0.9:')
+for value, label, tuple_data in zip(y_values, x_labels, tuples):
+    if value < 0.9:
+        print(f'{label} - {value:.3f} - {tuple_data}')
+        count += 1
+        tuples_below_0_9.append((tuple_data, value))
+print(f'Number of pairs with intended accuracy below 0.9: {count}')
+
+# %%
+
+stuff = {}
+
+for tuple_data, value in tuples_below_0_9:
+    pair = (tuple_data[0], tuple_data[1])
+    if pair not in stuff:
+        stuff[pair] = value
+        print(pair)
     else:
-        intended = a
-        acc = row['test_accuracy']
-    if acc < 0.5:
-        print(f'({a}, {b}) - intended: {intended}, accuracy: {acc:.3f}')
+        print(f"seen {pair} twice")
+
+
+
+# %%

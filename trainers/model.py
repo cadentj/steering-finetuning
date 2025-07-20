@@ -25,12 +25,12 @@ def projection_intervention(module, input, output, Q: t.Tensor):
 
 def load_model(
     model_id: str,
+    device: str,
     intervention_path: str = None,
 ) -> Tuple[AutoModelForCausalLM, AutoTokenizer]:
     model = AutoModelForCausalLM.from_pretrained(
         model_id, device_map="auto", torch_dtype=t.bfloat16
     )
-    print(model.device)
     tok = AutoTokenizer.from_pretrained(model_id)
     tok.padding_side = "left"
     tok.pad_token = tok.eos_token
@@ -43,7 +43,7 @@ def load_model(
 
     def add_handles(self):
         for hookpoint, vector in self.intervention_dict.items():
-            vector = vector.to("cuda:0").to(t.bfloat16)
+            vector = vector.to(device).to(t.bfloat16)
             submodule = self.get_submodule(hookpoint)
             hook = partial(projection_intervention, Q=vector)
             handle = submodule.register_forward_hook(hook)
