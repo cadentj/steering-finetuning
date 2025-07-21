@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from transformers import get_scheduler, AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 import wandb as wb
-
+from bitsandbytes.optim import AdamW8bit
 from .sft_config import SFTConfig
 
 
@@ -80,7 +80,7 @@ class SFTHarness:
         n_steps = len(self.train_data) * self.cfg.epochs
         n_warmup_steps = int(n_steps * self.cfg.warmup_ratio)
 
-        optim = t.optim.AdamW(
+        optim = AdamW8bit(
             self.model.parameters(),
             lr=self.cfg.lr,
             weight_decay=0.01,

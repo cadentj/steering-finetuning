@@ -103,11 +103,11 @@ for seed in ${SEEDS[@]}; do
             --wb_project 9b_mcmc \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
-            --batch_size 16 \
+            --batch_size 32 \
             --eval_batch_size 32 \
-            --epochs 4 \
-            --lr 2e-5 \
-            --warmup_ratio 0.25 \
+            --epochs 6 \
+            --lr 5e-5 \
+            --warmup_ratio 0.05 \
             --per_device_batch_size 16 \
             --seed $seed \
             --intervention_path $intervention_path \

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Load CSV
-df = pd.read_csv('llama_mcmc.csv')
+df = pd.read_csv('9b_mcmc.csv')
 
 print(df.shape)
 
