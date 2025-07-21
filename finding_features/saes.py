@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Literal
 
 from huggingface_hub import hf_hub_download
 import numpy as np
@@ -33,6 +33,51 @@ CANONICAL = {
     23: "layer_23/width_16k/average_l0_75",
     24: "layer_24/width_16k/average_l0_73",
     25: "layer_25/width_16k/average_l0_116",
+}
+
+CANONICAL_9B = {
+    0: "layer_0/width_16k/average_l0_129",
+    1: "layer_1/width_16k/average_l0_69",
+    2: "layer_2/width_16k/average_l0_67",
+    3: "layer_3/width_16k/average_l0_90",
+    4: "layer_4/width_16k/average_l0_91",
+    5: "layer_5/width_16k/average_l0_77",
+    6: "layer_6/width_16k/average_l0_93",
+    7: "layer_7/width_16k/average_l0_92",
+    8: "layer_8/width_16k/average_l0_99",
+    9: "layer_9/width_16k/average_l0_100",
+    10: "layer_10/width_16k/average_l0_113",
+    11: "layer_11/width_16k/average_l0_118",
+    12: "layer_12/width_16k/average_l0_130",
+    13: "layer_13/width_16k/average_l0_132",
+    14: "layer_14/width_16k/average_l0_67",
+    15: "layer_15/width_16k/average_l0_131",
+    16: "layer_16/width_16k/average_l0_75",
+    17: "layer_17/width_16k/average_l0_73",
+    18: "layer_18/width_16k/average_l0_71",
+    19: "layer_19/width_16k/average_l0_132",
+    20: "layer_20/width_16k/average_l0_68",
+    21: "layer_21/width_16k/average_l0_129",
+    22: "layer_22/width_16k/average_l0_123",
+    23: "layer_23/width_16k/average_l0_120",
+    24: "layer_24/width_16k/average_l0_114",
+    25: "layer_25/width_16k/average_l0_114",
+    26: "layer_26/width_16k/average_l0_116",
+    27: "layer_27/width_16k/average_l0_118",
+    28: "layer_28/width_16k/average_l0_119",
+    29: "layer_29/width_16k/average_l0_119",
+    30: "layer_30/width_16k/average_l0_120",
+    31: "layer_31/width_16k/average_l0_114",
+    32: "layer_32/width_16k/average_l0_111",
+    33: "layer_33/width_16k/average_l0_114",
+    34: "layer_34/width_16k/average_l0_114",
+    35: "layer_35/width_16k/average_l0_120",
+    36: "layer_36/width_16k/average_l0_120",
+    37: "layer_37/width_16k/average_l0_124",
+    38: "layer_38/width_16k/average_l0_128",
+    39: "layer_39/width_16k/average_l0_131",
+    40: "layer_40/width_16k/average_l0_125",
+    41: "layer_41/width_16k/average_l0_113",
 }
 
 LLAMA_NAME_MAP = {
@@ -74,11 +119,18 @@ class JumpReLUSAE(t.nn.Module):
         return recon
 
     @classmethod
-    def from_pretrained(cls, layer: int):
-        path_to_params = hf_hub_download(
-            repo_id="google/gemma-scope-2b-pt-res",
-            filename=CANONICAL[layer] + "/params.npz",
-        )
+    def from_pretrained(cls, layer: int, size: Literal["2b", "9b"] = "2b"):
+
+        if size == "2b":
+            path_to_params = hf_hub_download(
+                repo_id="google/gemma-scope-2b-pt-res",
+                filename=CANONICAL[layer] + "/params.npz",
+            )
+        else:
+            path_to_params = hf_hub_download(
+                repo_id="google/gemma-scope-9b-pt-res",
+                filename=CANONICAL_9B[layer] + "/params.npz",
+            )
 
         params = np.load(path_to_params)
         pt_params = {k: t.from_numpy(v) for k, v in params.items()}
@@ -159,13 +211,13 @@ class AutoEncoderTopK(t.nn.Module):
             return x_hat_BD, encoded_acts_BF
 
     @classmethod
-    def from_pretrained(cls, layer: int):
+    def from_pretrained(cls, layer: int, size: Literal["32x", "8x"] = "8x"):
         """
         Load a pretrained autoencoder from a file.
         """
         path_to_params = hf_hub_download(
-            repo_id="fnlp/Llama3_1-8B-Base-LXR-8x",
-            filename=f"Llama3_1-8B-Base-L{layer}R-8x/checkpoints/final.safetensors",
+            repo_id=f"fnlp/Llama3_1-8B-Base-LXR-{size}",
+            filename=f"Llama3_1-8B-Base-L{layer}R-{size}/checkpoints/final.safetensors",
         )
 
         params = load_file(path_to_params)

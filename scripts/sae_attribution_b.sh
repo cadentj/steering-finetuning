@@ -14,7 +14,6 @@ J=(verbs sentiment 0)
 K=(sports pronouns 1)
 L=(sentiment verbs 1)
 
-
 # M=(sentiment verbs 0)
 # N=(sports pronouns 0)
 
@@ -25,9 +24,9 @@ for split in G H I J K L; do
     eval label=\${$split[2]}
 
     uv run --active /root/steering-finetuning/saes.py \
-        --model meta-llama/Llama-3.1-8B \
+        --model unsloth/gemma-2-9b-bnb-4bit \
         --dataset_a $dataset_a \
         --dataset_b $dataset_b \
-        --output_path /workspace/llama_saes_per_layer/${dataset_a}_${dataset_b}_${label}.pt
+        --output_path /workspace/9b_saes/${dataset_a}_${dataset_b}_${label}.pt
 
 done

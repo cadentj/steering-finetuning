@@ -40,7 +40,7 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
                     .to(model.device)
                     .to(t.bfloat16)
                 )
-            elif "llama" in model_id:
+            elif "llama" in model_id or "Llama" in model_id:
                 sae = (
                     AutoEncoderTopK.from_pretrained(layer_idx)
                     .to(model.device)

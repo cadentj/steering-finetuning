@@ -1,6 +1,6 @@
-# A=(verbs pronouns 0)
-# B=(pronouns verbs 1)
-# C=(sports sentiment 1)
+A=(verbs pronouns 0)
+B=(pronouns verbs 1)
+C=(sports sentiment 1)
 D=(pronouns sentiment 1)
 E=(sentiment sports 0)
 F=(verbs sports 0)
@@ -31,18 +31,18 @@ F=(verbs sports 0)
 #         --which pca
 # done
 
-for split in B C D E F; do
+for split in A B C D E F; do
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}
     eval label=\${$split[2]}
 
     pair=${dataset_a}_${dataset_b}_${label}
-    sae_path=/workspace/llama_saes_per_layer/${pair}.pt
+    sae_path=/workspace/9b_saes/${pair}.pt
 
     uv run --active /root/steering-finetuning/finding_features/cache.py \
         --features_path $sae_path \
-        --model_id meta-llama/Llama-3.1-8B \
-        --save_dir /workspace/llama_mcmc_sae_caches_per_layer \
+        --model_id unsloth/gemma-2-9b-bnb-4bit \
+        --save_dir /workspace/9b_sae_caches \
         --name $pair \
         --which sae
 done

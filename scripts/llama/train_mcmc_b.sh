@@ -23,46 +23,20 @@ CUDA_DEVICE=${CUDA_VISIBLE_DEVICES:-0}
 # A=(verbs sentiment 0)
 # B=(sentiment verbs 0)
 # C=(sports pronouns 0)
-D=(pronouns sports 0)
-E=(sentiment sports 0)
-F=(verbs sports 0)
-# G=(sentiment pronouns 0)
-# H=(verbs pronouns 0)
-# I=(sports verbs 0)
-# J=(sports sentiment 0)
-# K=(pronouns verbs 0)
-# L=(pronouns sentiment 0)
+# D=(pronouns sports 0)
+# E=(sentiment sports 0)
+# F=(verbs sports 0)
 
-# Number indicates the intended question
-# A=(verbs sentiment 0)
-# B=(sports pronouns 1)
-# C=(pronouns sports 1)
-# D=(sentiment verbs 0)
-# E=(sentiment sports 1)
-# F=(verbs sports 1)
 
-# G=(sentiment pronouns 1)
-# H=(verbs pronouns 1)
-# I=(verbs sentiment 1)
-# J=(sports pronouns 0)
-# K=(pronouns sports 0)
-# L=(sentiment verbs 1)
+G=(sentiment pronouns 0)
+H=(verbs pronouns 0)
+I=(sports verbs 0)
+J=(sports sentiment 0)
+K=(pronouns verbs 0)
+L=(pronouns sentiment 0)
 
-# M=(sentiment sports 0)
-# N=(verbs sports 0)
-# O=(sentiment pronouns 0)
-# P=(verbs pronouns 0)
-# Q=(sports verbs 0)
-# R=(sports verbs 1)
 
-# S=(sports sentiment 0)
-# T=(sports sentiment 1)
-# U=(pronouns verbs 0)
-# V=(pronouns verbs 1)
-# W=(pronouns sentiment 0)
-# X=(pronouns sentiment 1)
-
-SEEDS=(3 4)
+SEEDS=(0 1 2)
 
 if [ "$TYPE" = "" ]; then
     echo "Type is required"
@@ -70,7 +44,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in D E F; do
+    for split in G H I J K L; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -106,17 +80,17 @@ for seed in ${SEEDS[@]}; do
         esac
 
         cmd="uv run --active /root/steering-finetuning/train_sft.py \
-            --model_id meta-llama/Llama-3.1-8B \
+            --model_id unsloth/gemma-2-9b-bnb-4bit \
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
-            --wb_project llama_mcmc \
+            --wb_project 9b_mcmc \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
             --batch_size 16 \
             --eval_batch_size 32 \
             --epochs 4 \
-            --lr 5e-6 \
-            --warmup_ratio 0.5 \
+            --lr 2e-5 \
+            --warmup_ratio 0.25 \
             --per_device_batch_size 16 \
             --seed $seed \
             --intervention_path $intervention_path \

@@ -7,6 +7,7 @@ import os
 from nnsight import LanguageModel
 import torch as t
 from torch.utils.data import DataLoader
+from transformers import AutoTokenizer
 
 from data import GenderDataset, MCMCDataset
 
@@ -58,7 +59,7 @@ def main(args, dataset):
             )
             for i in range(26)
         ]
-    elif args.model == "meta-llama/Llama-3.1-8B":
+    elif args.model == "meta-llama/Llama-3.1-8B" or args.model == "unsloth/meta-Llama-3.1-8B-unsloth-bnb-4bit":
         submodules = [
             (
                 model.model.layers[i],
@@ -79,47 +80,27 @@ def main(args, dataset):
 
     effects /= len(dl)
     # NOTE: commenting out to test n per layer rather than total
-    # effects = effects.flatten(0,1)
+    effects = effects.flatten(0,1)
 
     # Get top 100 effects
-    # top_effects = effects.topk(100)
-    # top_effects_indices = top_effects.indices.tolist()
-    
+    top_effects = effects.topk(100)
+    top_effects_indices = top_effects.indices.tolist()
 
     
     # Convert indices to a layer, latent dict
-    # d_sae = submodules[0][1].d_sae
-    # layer_latent_map = defaultdict(list)
-    # for idx in top_effects_indices:
-    #     layer = (idx // d_sae) * (2 if args.model == "meta-llama/Llama-3.1-8B" else 1)
-    #     latent = idx % d_sae
-    #     layer_latent_map[f"model.layers.{layer}"].append(latent)
+    d_sae = submodules[0][1].d_sae
+    layer_latent_map = defaultdict(list)
+    for idx in top_effects_indices:
+        layer = (idx // d_sae) * (2 if args.model == "meta-llama/Llama-3.1-8B" else 1)
+        latent = idx % d_sae
+        layer_latent_map[f"model.layers.{layer}"].append(latent)
 
 
-    layer_latent_map = {
-        f"model.layers.{layer_idx * 2}": effects[layer_idx].topk(20).indices.tolist() for layer_idx in range(0, 16)
-    }
-
-    intervention_dict = {}
-    for layer_idx, (layer_name, latents) in enumerate(layer_latent_map.items()):
-        W_dec = submodules[layer_idx][1].W_dec
-        W_dec_slice = W_dec[latents, :].float().T  # [d_model, k]
-
-        Q, _ = t.linalg.qr(W_dec_slice)
-        Q = Q.to(t.bfloat16)
-
-        intervention_dict[layer_name] = Q
+    # layer_latent_map = {
+    #     f"model.layers.{layer_idx * 2}": effects[layer_idx].topk(20).indices.tolist() for layer_idx in range(0, 16)
+    # }
 
     t.save(dict(layer_latent_map), args.output_path)
-
-    # # Save layer_latent_map
-    # with open(os.path.join(args.output_dir, "layer_latent_map.json"), "w") as f:
-    #     json.dump(layer_latent_map, f)
-
-    # t.save(intervention_dict, "intervention_dict.pt")
-
-    # t.save(effects, "effects.pt")
-
 
 if __name__ == "__main__":
     import argparse
