@@ -44,16 +44,16 @@ D=(pronouns sports 0)
 E=(sentiment sports 0)
 F=(verbs sports 0)
 
-# G=(sentiment pronouns 0)
-# H=(verbs pronouns 0)
-# I=(sports verbs 0)
-# J=(sports sentiment 0)
-# K=(pronouns verbs 0)
-# L=(pronouns sentiment 0)
+G=(sentiment pronouns 0)
+H=(verbs pronouns 0)
+I=(sports verbs 0)
+J=(sports sentiment 0)
+K=(pronouns verbs 0)
+L=(pronouns sentiment 0)
 
 
 
-SEEDS=(0 1 2)
+SEEDS=(0)
 
 if [ "$TYPE" = "" ]; then
     echo "Type is required"
@@ -61,7 +61,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D E F; do
+    for split in A B C D E F G H I J K L; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -97,17 +97,17 @@ for seed in ${SEEDS[@]}; do
         esac
 
         cmd="uv run --active /root/steering-finetuning/train_sft.py \
-            --model_id unsloth/gemma-2-9b-bnb-4bit \
+            --model_id meta-llama/Llama-3.1-8B-Instruct \
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
-            --wb_project 9b_mcmc \
+            --wb_project llama_instruct_mcmc \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
             --batch_size 32 \
             --eval_batch_size 32 \
-            --epochs 6 \
-            --lr 5e-5 \
-            --warmup_ratio 0.05 \
+            --epochs 2 \
+            --lr 5e-6 \
+            --warmup_ratio 0.25 \
             --per_device_batch_size 16 \
             --seed $seed \
             --intervention_path $intervention_path \

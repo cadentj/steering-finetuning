@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from transformers import get_scheduler, AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 import wandb as wb
-from bitsandbytes.optim import AdamW8bit
+from torch.optim import AdamW
 from .sft_config import SFTConfig
 
 
@@ -59,7 +59,7 @@ class SFTHarness:
         collate_fn = partial(_collate_fn, tokenizer=tok)
         self.train_data = DataLoader(
             dataset.train,
-            batch_size=self.cfg.batch_size,
+            batch_size=self.cfg.per_device_batch_size,
             shuffle=True,
             collate_fn=collate_fn,
         )
@@ -80,7 +80,7 @@ class SFTHarness:
         n_steps = len(self.train_data) * self.cfg.epochs
         n_warmup_steps = int(n_steps * self.cfg.warmup_ratio)
 
-        optim = AdamW8bit(
+        optim = AdamW(
             self.model.parameters(),
             lr=self.cfg.lr,
             weight_decay=0.01,

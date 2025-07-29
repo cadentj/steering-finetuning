@@ -24,7 +24,7 @@ for split in A B C D E F; do
     eval label=\${$split[2]}
 
     uv run --active /root/steering-finetuning/saes.py \
-        --model unsloth/gemma-2-9b-bnb-4bit \
+        --model meta-llama/Llama-3.1-8B-Instruct \
         --dataset_a $dataset_a \
         --dataset_b $dataset_b \
         --output_path /workspace/9b_saes/${dataset_a}_${dataset_b}_${label}.pt
