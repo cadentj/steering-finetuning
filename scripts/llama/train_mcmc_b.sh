@@ -53,7 +53,7 @@ L=(pronouns sentiment 0)
 
 
 
-SEEDS=(0)
+SEEDS=(0 1 2 3 4)
 
 if [ "$TYPE" = "" ]; then
     echo "Type is required"

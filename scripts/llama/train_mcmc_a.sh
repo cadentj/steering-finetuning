@@ -22,27 +22,14 @@ CUDA_DEVICE=${CUDA_VISIBLE_DEVICES:-0}
 
 # Number indicates the intended question
 
-# A=(verbs pronouns 0)
-# B=(pronouns verbs 1)
-# C=(sports sentiment 1)
-# D=(pronouns sentiment 1)
+
+
+# A=(verbs sentiment 0)
+# B=(sentiment verbs 0)
+# C=(sports pronouns 0)
+# D=(pronouns sports 0)
 # E=(sentiment sports 0)
 # F=(verbs sports 0)
-
-# G=(sentiment pronouns 0)
-# H=(sports verbs 1)
-# I=(pronouns sports 0)
-# J=(verbs sentiment 0)
-# K=(sports pronouns 1)
-# L=(sentiment verbs 1)
-
-
-A=(verbs sentiment 0)
-B=(sentiment verbs 0)
-C=(sports pronouns 0)
-D=(pronouns sports 0)
-E=(sentiment sports 0)
-F=(verbs sports 0)
 
 # G=(sentiment pronouns 0)
 # H=(verbs pronouns 0)
@@ -52,8 +39,18 @@ F=(verbs sports 0)
 # L=(pronouns sentiment 0)
 
 
+A=(pronouns sentiment 1)
+B=(pronouns verbs 1)
+C=(sports pronouns 0)
+D=(verbs sports 0)
+E=(verbs sentiment 0)
+F=(sentiment sports 0)
+G=(sports sentiment 0)
+H=(sentiment verbs 0)
+I=(sports verbs 0)
 
-SEEDS=(0)
+
+SEEDS=(0 1)
 
 if [ "$TYPE" = "" ]; then
     echo "Type is required"
@@ -61,7 +58,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D E F; do
+    for split in D; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -75,7 +72,7 @@ for seed in ${SEEDS[@]}; do
                 run_name_suffix=""
                 ;;
             interpreted)
-                intervention_path="/workspace/pcas/${dataset_a}_${dataset_b}_features_intervention.pt"
+                intervention_path="/workspace/llama_1b_interventions/${dataset_a}_${dataset_b}_${label}_interpreted.pt"
                 run_name_suffix="_intervention"
                 ;;
             random)
@@ -100,15 +97,15 @@ for seed in ${SEEDS[@]}; do
             --model_id meta-llama/Llama-3.2-1B \
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
-            --wb_project llama_1b_mcmc_base \
+            --wb_project llama_1b_mcmc_interpreted \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
-            --batch_size 16 \
+            --batch_size 8 \
             --eval_batch_size 32 \
             --epochs 3 \
             --lr 5e-6 \
-            --warmup_ratio 0.15 \
-            --per_device_batch_size 16 \
+            --warmup_ratio 0.50 \
+            --per_device_batch_size 8 \
             --seed $seed \
             --device $CUDA_DEVICE \
             --intervention_path $intervention_path"

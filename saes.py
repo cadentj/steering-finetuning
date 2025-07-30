@@ -12,7 +12,7 @@ from transformers import AutoTokenizer
 from data import GenderDataset, MCMCDataset
 
 from finding_features.attribution import compute_diff_effect
-from sae_lens import SAE
+# from sae_lens import SAE
 
 from finding_features.saes import AutoEncoderTopK, JumpReLUSAE
 from sparsify import Sae
@@ -79,36 +79,36 @@ def main(args, dataset):
             for i in range(0, 32, 2)
         ]
         layers = list(range(0, 32, 2))
-    elif args.model == "google/gemma-3-1b-pt":
-        release = "gemma-3-1b-res-matryoshka-dc"
-        submodules = [
-            (
-                model.model.layers[i],
-                SAE.from_pretrained(release, f"blocks.{i}.hook_resid_post")[0]
-                .to(model.device)
-                .to(t.bfloat16),
-            )
-            for i in range(0, 24, 2)
-        ]
-        layers = list(range(0, 24, 2))
-        for submodule in submodules:
-            submodule[1].d_sae = 32_768
+    # elif args.model == "google/gemma-3-1b-pt":
+    #     release = "gemma-3-1b-res-matryoshka-dc"
+    #     submodules = [
+    #         (
+    #             model.model.layers[i],
+    #             SAE.from_pretrained(release, f"blocks.{i}.hook_resid_post")[0]
+    #             .to(model.device)
+    #             .to(t.bfloat16),
+    #         )
+    #         for i in range(0, 24, 2)
+    #     ]
+    #     layers = list(range(0, 24, 2))
+    #     for submodule in submodules:
+    #         submodule[1].d_sae = 32_768
 
-    elif args.model == "mistralai/Mistral-7B-v0.1":
-        release = "mistral-7b-res-wg"
+    # elif args.model == "mistralai/Mistral-7B-v0.1":
+    #     release = "mistral-7b-res-wg"
 
-        submodules = [
-            (
-                model.model.layers[i],
-                SAE.from_pretrained(release, f"blocks.{i}.hook_resid_pre")[0]
-                .to(model.device)
-                .to(t.bfloat16),
-            )
-            for i in [8, 16, 24]
-        ]
-        layers = [8, 16, 24]
-        for submodule in submodules:
-            submodule[1].d_sae = 65_536
+    #     submodules = [
+    #         (
+    #             model.model.layers[i],
+    #             SAE.from_pretrained(release, f"blocks.{i}.hook_resid_pre")[0]
+    #             .to(model.device)
+    #             .to(t.bfloat16),
+    #         )
+    #         for i in [8, 16, 24]
+    #     ]
+    #     layers = [8, 16, 24]
+    #     for submodule in submodules:
+    #         submodule[1].d_sae = 65_536
 
     elif args.model == "meta-llama/Llama-3.2-1B":
         submodules = [
@@ -118,9 +118,9 @@ def main(args, dataset):
                 .to(model.device)
                 .to(t.bfloat16),
             )
-            for i in range(0, 16, 2)
+            for i in range(0, 16)
         ]
-        layers = list(range(0, 16, 2))
+        layers = list(range(0, 16))
 
         for submodule in submodules:
             submodule[1].d_sae = 131_072
@@ -152,8 +152,10 @@ def main(args, dataset):
     #     latent = idx % d_sae
     #     layer_latent_map[f"model.layers.{layer}"].append(latent)
 
+
+    print("SAVING MLP HOOKPOINT FOR LLAMA")
     layer_latent_map = {
-        f"model.layers.{layer_idx}": effects[row_idx]
+        f"model.layers.{layer_idx}.mlp": effects[row_idx]
         .topk(20)
         .indices.tolist()
         for row_idx, layer_idx in enumerate(layers)  # row_idx is the row index of the effects tensor

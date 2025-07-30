@@ -8,9 +8,8 @@ E=(verbs sentiment 0)
 F=(sentiment sports 0)
 G=(sports sentiment 0)
 H=(sentiment verbs 0)
-I=(sports verbs 0)
 
-for split in A B C D E F G H I; do
+for split in A B C D E F G H; do
     # Use indirect variable reference for array access
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}

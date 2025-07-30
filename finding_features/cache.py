@@ -25,13 +25,8 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
     if which == "sae":
         latent_filter = t.load(features_path, weights_only=False)
 
-        print("WARNING UPDATING LATENT FILTER TO HAVE MLP HOOKPOINTS")
-
-        keys = list(latent_filter.keys())
-        for key in keys:
-            latent_filter[key + ".mlp"] = latent_filter[key]
-            del latent_filter[key]
-
+        if "mlp" in list(latent_filter.keys())[0]:
+            print("MLP HOOKPOINTS IN LATENT FILTER")
         print(latent_filter.keys())
 
         hookpoints = list(latent_filter.keys())
