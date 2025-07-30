@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 
 ENTITY = "steering-finetuning"
-PROJECT = "llama_mcmc"
+PROJECT = "llama_1b_mcmc_base"
 CSV_PATH = "wandb_run_stats.csv"
 
 api = wandb.Api()

@@ -17,9 +17,9 @@ for split in A B C D E F G H I; do
     eval label=\${$split[2]}
 
     uv run --active /root/steering-finetuning/saes.py \
-        --model meta-llama/Llama-3.2-1B \
+        --model mistralai/Mistral-7B-v0.1 \
         --dataset_a $dataset_a \
         --dataset_b $dataset_b \
-        --output_path /workspace/llama_1b_saes/${dataset_a}_${dataset_b}_${label}.pt
+        --output_path /workspace/mistral_saes/${dataset_a}_${dataset_b}_${label}.pt
 
 done

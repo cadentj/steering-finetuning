@@ -37,12 +37,12 @@ CUDA_DEVICE=${CUDA_VISIBLE_DEVICES:-0}
 # L=(sentiment verbs 1)
 
 
-A=(verbs sentiment 0)
-B=(sentiment verbs 0)
+# A=(verbs sentiment 0)
+# B=(sentiment verbs 0)
 C=(sports pronouns 0)
 D=(pronouns sports 0)
-E=(sentiment sports 0)
-F=(verbs sports 0)
+# E=(sentiment sports 0)
+# F=(verbs sports 0)
 
 # G=(sentiment pronouns 0)
 # H=(verbs pronouns 0)
@@ -50,8 +50,6 @@ F=(verbs sports 0)
 # J=(sports sentiment 0)
 # K=(pronouns verbs 0)
 # L=(pronouns sentiment 0)
-
-
 
 SEEDS=(0)
 
@@ -61,7 +59,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D E F; do
+    for split in C D; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -97,21 +95,22 @@ for seed in ${SEEDS[@]}; do
         esac
 
         cmd="uv run --active /root/steering-finetuning/train_sft.py \
-            --model_id meta-llama/Llama-3.2-1B \
+            --model_id meta-llama/Llama-3.1-8B \
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
-            --wb_project llama_1b_mcmc_base \
+            --wb_project llama_mcmc_base \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
             --batch_size 16 \
             --eval_batch_size 32 \
-            --epochs 3 \
+            --epochs 4 \
             --lr 5e-6 \
-            --warmup_ratio 0.15 \
+            --warmup_ratio 0.5 \
             --per_device_batch_size 16 \
             --seed $seed \
+            --intervention_path $intervention_path \
             --device $CUDA_DEVICE \
-            --intervention_path $intervention_path"
+            --output_dir /workspace/llama_mcmc_base/${dataset_a}_${dataset_b}_${label}"
 
         if [ "$TYPE" = "test_only" ]; then
             cmd+=" \

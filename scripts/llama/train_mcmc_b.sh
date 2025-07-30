@@ -37,19 +37,19 @@ CUDA_DEVICE=${CUDA_VISIBLE_DEVICES:-0}
 # L=(sentiment verbs 1)
 
 
-A=(verbs sentiment 0)
-B=(sentiment verbs 0)
-C=(sports pronouns 0)
-D=(pronouns sports 0)
-E=(sentiment sports 0)
-F=(verbs sports 0)
+# A=(verbs sentiment 0)
+# B=(sentiment verbs 0)
+# C=(sports pronouns 0)
+# D=(pronouns sports 0)
+# E=(sentiment sports 0)
+# F=(verbs sports 0)
 
-# G=(sentiment pronouns 0)
-# H=(verbs pronouns 0)
-# I=(sports verbs 0)
-# J=(sports sentiment 0)
-# K=(pronouns verbs 0)
-# L=(pronouns sentiment 0)
+G=(sentiment pronouns 0)
+H=(verbs pronouns 0)
+I=(sports verbs 0)
+J=(sports sentiment 0)
+K=(pronouns verbs 0)
+L=(pronouns sentiment 0)
 
 
 
@@ -61,7 +61,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D E F; do
+    for split in G H I J K L; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Load CSV
-df = pd.read_csv('9b_mcmc.csv')
+df = pd.read_csv('llama_mcmc.csv')
 
 print(df.shape)
 
@@ -66,6 +66,9 @@ plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.show()
 
+
+# %%
+
 # Print pairs with intended accuracy below 0.5
 count = 0
 tuples_below_0_9 = []
@@ -82,12 +85,45 @@ print(f'Number of pairs with intended accuracy below 0.9: {count}')
 stuff = {}
 
 for tuple_data, value in tuples_below_0_9:
-    pair = (tuple_data[0], tuple_data[1])
-    if pair not in stuff:
-        stuff[pair] = value
-        print(pair)
-    else:
-        print(f"seen {pair} twice")
+
+    # check if reverse pair is in stuff, with lower value
+    tuple_to_check = (tuple_data[1], tuple_data[0], 1 if tuple_data[2] == 0 else 0)
+    
+    
+    if tuple_to_check in stuff:
+        if stuff[tuple_to_check] > value:
+            stuff[tuple_data] = value
+
+            del stuff[tuple_to_check]
+            
+            print(f"updated {tuple_to_check} to {value}")
+        else:
+            print(f"seen {tuple_to_check} twice")
+    else:   
+        stuff[tuple_data] = value
+        print(f"added {tuple_data} to stuff")
+
+print(len(stuff))
+
+# %%
+
+stuff
+
+# %%
+
+y_values = stuff.values()
+x_values = stuff.keys()
+x_labels = [f'{x[0]} vs {x[1]}' for x in x_values]
+
+plt.figure(figsize=(12, 6))
+plt.bar(x_labels, y_values)
+plt.ylabel('Accuracy (Intended)')
+plt.ylim(0, 1)
+plt.axhline(0.5, color='gray', linestyle='--', linewidth=1)
+plt.title('Intended Accuracy')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
 
 
 

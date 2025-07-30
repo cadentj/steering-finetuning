@@ -97,24 +97,24 @@ t.save(tokens, f"{save_dir}/tokens.pt")
 from autointerp.vis.dashboard import make_feature_display
 import torch as t
 
-features = "sports_sentiment_1"
+features = "sports_pronouns_0"
 latent_filter = t.load(
-    f"/workspace/llama_saes_per_layer_big/{features}.pt", weights_only=False
+    "/workspace/mistral_saes/sports_pronouns_0.pt"
 )
 
-trimmed_latent_filter = {k: v[:10] for k, v in latent_filter.items()}
-
-for layer, data in latent_filter.items():
-    print(layer)
-    print(len(data))
-
+latent_filter = {
+    name : latents[:20] for name, latents in latent_filter.items()
+}
 
 # %%
 
 cache_dirs = [
-    f"/workspace/llama_mcmc_sae_caches_per_layer_big/{features}_cache/{hookpoint}"
+    f"/workspace/mistral_sae_caches/{features}_cache/{hookpoint}"
     for hookpoint in latent_filter.keys()
 ]
+
+cache_dirs
+
 
 # %%
 
@@ -125,6 +125,8 @@ feature_display = make_feature_display(
     ctx_len=16,
     load_min_activating=False,
 )
+
+
 
 # %%
 

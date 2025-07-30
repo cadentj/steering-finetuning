@@ -97,16 +97,16 @@ for seed in ${SEEDS[@]}; do
         esac
 
         cmd="uv run --active /root/steering-finetuning/train_sft.py \
-            --model_id meta-llama/Llama-3.2-1B \
+            --model_id google/gemma-3-1b-pt \
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
-            --wb_project llama_1b_mcmc_base \
+            --wb_project gemma_3_mcmc_base \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
             --batch_size 16 \
             --eval_batch_size 32 \
-            --epochs 3 \
-            --lr 5e-6 \
+            --epochs 4 \
+            --lr 5e-5 \
             --warmup_ratio 0.15 \
             --per_device_batch_size 16 \
             --seed $seed \
