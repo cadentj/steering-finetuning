@@ -4,10 +4,9 @@
 from autointerp.vis.dashboard import make_feature_display
 import torch as t
 
-task = "pronouns_verbs_1"
+task = "sentiment_verbs_0"
 
-# todo
-# verbs_sentiment_0
+
 
 features = f"{task}"
 latent_filter = t.load(
@@ -34,3 +33,9 @@ feature_display = make_feature_display(
     load_min_activating=False,
 )
 
+# %%
+
+from datasets import load_dataset
+
+dataset = load_dataset("hc-mats/subject-verb-agreement")
+print(dataset['train']['correct'][10:20])

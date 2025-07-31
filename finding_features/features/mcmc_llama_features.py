@@ -105,6 +105,82 @@ sentiment_sports_0 = {
 }
 
 
+pronouns_verbs_1 = {
+    "model.layers.0.mlp": [22753, 36913, 49174, 84634, 94484, 96499],
+    "model.layers.1.mlp": [31126, 31653, 34082, 34856, 75821, 77126, 126870],
+    "model.layers.2.mlp": [9108, 30231], 
+    "model.layers.3.mlp": [24179, 105336],
+    "model.layers.4.mlp": [104047],
+    "model.layers.5.mlp": [52356, 128351],
+    "model.layers.6.mlp": [], 
+    "model.layers.7.mlp": [70930, 89459],
+    "model.layers.8.mlp": [],
+    "model.layers.9.mlp": [],
+    "model.layers.10.mlp": [], 
+    "model.layers.11.mlp": [],
+    "model.layers.12.mlp": [44413],
+    "model.layers.13.mlp": [],
+    "model.layers.14.mlp": [],
+    "model.layers.15.mlp": [],
+}
+
+verbs_sentiment_0 = {
+    "model.layers.0.mlp": [5478, 11402, 12751, 23692, 56193, 115968, 126902],
+    "model.layers.1.mlp": [42384, 56604, 103176],
+    "model.layers.2.mlp": [17888, 43948, 66754], 
+    "model.layers.3.mlp": [59887, 86030, 106716, 114565],
+    "model.layers.4.mlp": [81801, 114586],
+    "model.layers.5.mlp": [4148, 35649],
+    "model.layers.6.mlp": [26029, 98229], 
+    "model.layers.7.mlp": [],
+    "model.layers.8.mlp": [],
+    "model.layers.9.mlp": [],
+    "model.layers.10.mlp": [], 
+    "model.layers.11.mlp": [],
+    "model.layers.12.mlp": [60890],
+    "model.layers.13.mlp": [],
+    "model.layers.14.mlp": [],
+    "model.layers.15.mlp": [],
+}
+
+
+sports_sentiment_0 = {
+    "model.layers.0.mlp": [34209, 115968],
+    "model.layers.1.mlp": [42384, 103176],
+    "model.layers.2.mlp": [], 
+    "model.layers.3.mlp": [59887, 114565],
+    "model.layers.4.mlp": [64904, 35649],
+    "model.layers.5.mlp": [],
+    "model.layers.6.mlp": [], 
+    "model.layers.7.mlp": [99317],
+    "model.layers.8.mlp": [105311],
+    "model.layers.9.mlp": [],
+    "model.layers.10.mlp": [], 
+    "model.layers.11.mlp": [],
+    "model.layers.12.mlp": [],
+    "model.layers.13.mlp": [],
+    "model.layers.14.mlp": [],
+    "model.layers.15.mlp": [],
+}
+
+sentiment_verbs_0 = {
+    "model.layers.0.mlp": [2256, 3048, 54727, 98078, 122156],
+    "model.layers.1.mlp": [226, 120164],
+    "model.layers.2.mlp": [59788, 125991], 
+    "model.layers.3.mlp": [8156, 64696],
+    "model.layers.4.mlp": [68137, 84346],
+    "model.layers.5.mlp": [],
+    "model.layers.6.mlp": [], 
+    "model.layers.7.mlp": [],
+    "model.layers.8.mlp": [],
+    "model.layers.9.mlp": [],
+    "model.layers.10.mlp": [], 
+    "model.layers.11.mlp": [],
+    "model.layers.12.mlp": [],
+    "model.layers.13.mlp": [],
+    "model.layers.14.mlp": [33993],
+    "model.layers.15.mlp": [],
+}
 
 
 exported_features = {
@@ -112,4 +188,7 @@ exported_features = {
     "sports_pronouns_0": sports_pronouns_0,
     "verbs_sports_0": verbs_sports_0,
     "sentiment_sports_0": sentiment_sports_0,
+    "pronouns_verbs_1": pronouns_verbs_1,
+    "verbs_sentiment_0": verbs_sentiment_0,
+    "sports_sentiment_0": sports_sentiment_0,
 }

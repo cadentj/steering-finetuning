@@ -50,7 +50,7 @@ H=(sentiment verbs 0)
 I=(sports verbs 0)
 
 
-SEEDS=(0 1)
+SEEDS=(0 1 2 3 4)
 
 if [ "$TYPE" = "" ]; then
     echo "Type is required"
@@ -58,7 +58,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in D; do
+    for split in A B C D E F G H; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -97,7 +97,7 @@ for seed in ${SEEDS[@]}; do
             --model_id meta-llama/Llama-3.2-1B \
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
-            --wb_project llama_1b_mcmc_interpreted \
+            --wb_project llama_1b_mcmc_base \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
             --batch_size 8 \

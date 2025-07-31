@@ -43,6 +43,7 @@ def load_model(
 
     def add_handles(self):
         for hookpoint, vector in self.intervention_dict.items():
+            print(device)
             vector = vector.to(device).to(t.bfloat16)
 
             if ".mlp" in hookpoint:

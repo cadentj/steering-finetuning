@@ -85,10 +85,8 @@ print(f'Number of pairs with intended accuracy below 0.9: {count}')
 stuff = {}
 
 for tuple_data, value in tuples_below_0_9:
-
     # check if reverse pair is in stuff, with lower value
     tuple_to_check = (tuple_data[1], tuple_data[0], 1 if tuple_data[2] == 0 else 0)
-    
     
     if tuple_to_check in stuff:
         if stuff[tuple_to_check] > value:
@@ -96,18 +94,23 @@ for tuple_data, value in tuples_below_0_9:
 
             del stuff[tuple_to_check]
             
-            print(f"updated {tuple_to_check} to {value}")
+            print(f"UPDATED {tuple_data} --> {tuple_to_check}")
         else:
-            print(f"seen {tuple_to_check} twice")
+            print(f"KEPT {tuple_to_check}, NOT {tuple_data}")
     else:   
         stuff[tuple_data] = value
-        print(f"added {tuple_data} to stuff")
+        print(f"ADDED {tuple_data}")
 
 print(len(stuff))
 
 # %%
 
 stuff
+
+# %%
+tuples_below_0_9
+
+
 
 # %%
 

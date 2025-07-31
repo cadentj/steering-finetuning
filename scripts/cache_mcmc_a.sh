@@ -8,7 +8,7 @@ G=(sports sentiment 0)
 H=(sentiment verbs 0)
 
 
-for split in B E G H; do
+for split in G H; do
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}
     eval label=\${$split[2]}
