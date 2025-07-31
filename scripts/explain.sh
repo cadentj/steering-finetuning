@@ -7,14 +7,13 @@ F=(verbs sports 0)
 G=(sentiment pronouns 0)
 H=(verbs pronouns 0)
 
-for split in A B C D E F G H; do
+for split in A B C D; do
     eval dataset_a=\${$split[0]}
     eval dataset_b=\${$split[1]}
     eval label=\${$split[2]}
 
     pair=${dataset_a}_${dataset_b}
 
-    
     eval to_ablate=\${$split[$((1-label))]}
 
     echo "ABLATING ${to_ablate}"

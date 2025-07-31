@@ -12,9 +12,8 @@ for split in E F G H; do
     eval dataset_b=\${$split[1]}
     eval label=\${$split[2]}
 
-    pair=${dataset_a}_${dataset_b}
+    pair=${dataset_a}_${dataset_b}_${label}
 
-    
     eval to_ablate=\${$split[$((1-label))]}
 
     echo "ABLATING ${to_ablate}"

@@ -10,25 +10,13 @@ from autointerp.automation.query import Query
 from autointerp.automation.prompts.query_prompt import QUERY_PROMPT
 from openai import AsyncOpenAI
 
-from datasets import load_dataset
-
 from pointers import pointers
 
-MODEL = "gpt-4.1-mini-2025-04-14"
-DATASET_NAMES = {
-    "verbs": "hc-mats/subject-verb-agreement",
-    "sentiment": "kh4dien/mc-sentiment",
-    "sports": "hc-mats/sports-gemma-2-2b-top-1000",
-    "pronouns": "kh4dien/mc-gender",
-    "gender" : "hcasademunt/gender-pronoun-profession"
-}
+MODEL = "gpt-4.1-2025-04-14"
 
 
 async def explain_and_score(query_prompt: str, feature_path: str):
-    oai_client = AsyncOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-    )
+    oai_client = AsyncOpenAI()
 
     features = load(
         feature_path,
@@ -81,12 +69,8 @@ def main(cache_path: str, output_dir: str):
 
     results = {}
 
-    dataset = load_dataset(DATASET_NAMES[args.task], split="train")
-    dataset_examples_str = "\n".join(dataset["text"][:5])
     pointer = pointers[args.task]
-    query_prompt = QUERY_PROMPT.format(
-        task_examples=dataset_examples_str, pointers=pointer
-    )
+    query_prompt = QUERY_PROMPT.format(pointers=pointer)
 
     for layer in range(0, 26, 2):
         feature_path = f"{cache_path}/model.layers.{layer}"

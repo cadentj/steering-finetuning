@@ -2,7 +2,8 @@ sports = """- Look for features that consistently activate on people's names, pa
 - Look for features that detect sports-related terminology, team names, competitions, or game activities."""
 
 sentiment = """- Look for features that track words with strong positive or negative emotional connotations.
-- Look for features that detect language patterns commonly used to express or describe feelings and reactions."""
+- Look for features that detect language patterns commonly used to express or describe feelings and reactions.
+- Look for features that simply activate on words like 'positive' and 'negative'."""
 
 verbs = """- Look for features that specifically recognize verbs across different tenses and forms.
 - Look for features that recognize singular or plural noun forms.
