@@ -77,7 +77,7 @@ for seed in ${SEEDS[@]}; do
             --dataset_a $dataset_a \
             --dataset_b $dataset_b \
             --wb_project gemma_autointerp \
-            --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
+            --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix}_pca \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
             --batch_size 16 \
             --eval_batch_size 32 \

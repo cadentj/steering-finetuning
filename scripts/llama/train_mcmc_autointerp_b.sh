@@ -20,10 +20,10 @@ done
 CUDA_DEVICE=${CUDA_VISIBLE_DEVICES:-0}
 
 # Number indicates the intended question
-A=(verbs sentiment 1)
-B=(sports pronouns 0)
-C=(pronouns sports 0)
-D=(sentiment verbs 1)
+# A=(verbs sentiment 1)
+# B=(sports pronouns 0)
+# C=(pronouns sports 0)
+# D=(sentiment verbs 1)
 E=(sentiment sports 0)
 F=(verbs sports 0)
 G=(sentiment pronouns 0)

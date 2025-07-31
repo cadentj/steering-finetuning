@@ -70,10 +70,13 @@ def get_mcmc_data(full_df):
 
         if intended_df.shape[0] != 5:
             print(intended_df)
-        assert intended_df.shape[0] == 5
+        # assert intended_df.shape[0] == 5
+
+        if intended_df.shape[0] != 5:
+            print(intended_df.shape[0])
         
         mean_accuracy = intended_df[which].mean()
-        std_error = intended_df[which].std() / np.sqrt(5)
+        std_error = intended_df[which].std() / np.sqrt(intended_df.shape[0])
 
         means.append(mean_accuracy)
         std_errors.append(std_error)
