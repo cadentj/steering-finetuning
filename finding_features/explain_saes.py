@@ -14,7 +14,7 @@ from datasets import load_dataset
 
 from pointers import pointers
 
-MODEL = "gpt-4.1-mini-2025-04-14"
+MODEL = "o4-mini-2025-04-16"
 DATASET_NAMES = {
     "verbs": "hc-mats/subject-verb-agreement",
     "sentiment": "kh4dien/mc-sentiment",
@@ -33,6 +33,9 @@ async def explain_and_score(query_prompt: str, feature_path: str):
         max_examples=20,
         load_min_activating=False,
     )
+
+    if len(features) == 0:
+        return {}
 
     results = {}
 
@@ -83,6 +86,11 @@ async def main(cache_path: str, output_dir: str):
 
     for layer in range(0, 26):
         feature_path = f"{cache_path}/model.layers.{layer}"
+
+        if not os.path.exists(feature_path):
+            print(f"Skipping layer {layer} because it doesn't exist")
+            continue
+
         results[f"layer_{layer}"] = await explain_and_score(query_prompt, feature_path)
 
         with open(f"{output_dir}/{pair}_results.json", "w") as f:
