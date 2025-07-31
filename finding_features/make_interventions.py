@@ -7,7 +7,7 @@ t.set_grad_enabled(False)
 
 submodules = {
     f"model.layers.{i}.mlp" : Sae.load_from_hub("EleutherAI/sae-Llama-3.2-1B-131k", hookpoint=f"layers.{i}.mlp")
-        .to("cuda")
+        .to("cuda:0")
         .to(t.bfloat16)
     for i in tqdm(range(0, 16))
 }
@@ -27,7 +27,7 @@ for name, features in exported_features.items():
         W_dec_slice = sae.W_dec[indices, :].float().T
 
         Q, _ = t.linalg.qr(W_dec_slice)
-        Q = Q.to(t.bfloat16)
+        Q = Q.to(t.bfloat16).cpu()
 
         intervention_dict[hookpoint] = Q
 

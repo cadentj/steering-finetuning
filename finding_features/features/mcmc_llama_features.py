@@ -191,4 +191,5 @@ exported_features = {
     "pronouns_verbs_1": pronouns_verbs_1,
     "verbs_sentiment_0": verbs_sentiment_0,
     "sports_sentiment_0": sports_sentiment_0,
+    "sentiment_verbs_0": sentiment_verbs_0,
 }

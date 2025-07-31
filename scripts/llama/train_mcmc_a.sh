@@ -100,12 +100,12 @@ for seed in ${SEEDS[@]}; do
             --wb_project llama_1b_mcmc_base \
             --wb_run_name ${dataset_a}_${dataset_b}_${label}_s${seed}${run_name_suffix} \
             --wb_run_group ${dataset_a}_${dataset_b}_${label} \
-            --batch_size 8 \
+            --batch_size 16 \
             --eval_batch_size 32 \
             --epochs 3 \
             --lr 5e-6 \
             --warmup_ratio 0.50 \
-            --per_device_batch_size 8 \
+            --per_device_batch_size 16 \
             --seed $seed \
             --device $CUDA_DEVICE \
             --intervention_path $intervention_path"

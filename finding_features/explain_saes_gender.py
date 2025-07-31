@@ -25,10 +25,7 @@ DATASET_NAMES = {
 
 
 async def explain_and_score(query_prompt: str, feature_path: str):
-    oai_client = AsyncOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-    )
+    oai_client = AsyncOpenAI()
 
     features = load(
         feature_path,

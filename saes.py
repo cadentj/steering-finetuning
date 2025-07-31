@@ -43,7 +43,7 @@ def _collate_fn(batch, tokenizer):
 def main(args, dataset):
     model = LanguageModel(
         args.model,
-        device_map="auto",
+        device_map="cuda:1",
         torch_dtype=t.bfloat16,
         dispatch=True,
     )

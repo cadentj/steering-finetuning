@@ -22,10 +22,10 @@ def _collate_fn(batch, tokenizer):
 
 def main(args, dataset):
     base_model = AutoModelForCausalLM.from_pretrained(
-        args.base_model, device_map="auto", torch_dtype=t.bfloat16
+        args.base_model, device_map="cuda:0", torch_dtype=t.bfloat16
     )
     tuned_model = AutoModelForCausalLM.from_pretrained(
-        args.tuned_model, device_map="auto", torch_dtype=t.bfloat16
+        args.tuned_model, device_map="cuda:0", torch_dtype=t.bfloat16
     )
     tok = AutoTokenizer.from_pretrained(args.base_model)
     tok.pad_token = tok.eos_token
@@ -39,13 +39,12 @@ def main(args, dataset):
         hookpoints = [f"model.layers.{i}" for i in range(26)]
         d_model = 2304
 
-    elif args.base_model == "meta-llama/Llama-3.1-8B":
-        hookpoints = [f"model.layers.{i}" for i in range(32)]
-        d_model = 4096
+    elif args.base_model == "meta-llama/Llama-3.2-1B":
+        hookpoints = [f"model.layers.{i}" for i in range(16)]
+        d_model = 2048
 
     n_components = 20
     
-
     intervention_dict = compute_pca_diff(
         base_model,
         tuned_model,
