@@ -14,7 +14,7 @@ from datasets import load_dataset
 
 from pointers import pointers
 
-MODEL = "gpt-4.1-mini-2025-04-14"
+MODEL = "o4-mini-2025-04-16"
 DATASET_NAMES = {
     "verbs": "hc-mats/subject-verb-agreement",
     "sentiment": "kh4dien/mc-sentiment",
@@ -54,10 +54,11 @@ async def explain_and_score(query_prompt: str, feature_path: str):
 
     # Max activating examples
     async def explain_and_score_feature(feature):
-        pbar.update(1)
 
         max_explanation, max_score = await max_explainer(feature)
         min_explanation, min_score = await min_explainer(feature)
+
+        pbar.update(1)
 
         results[feature.index] = {
             "max/score": max_score,
