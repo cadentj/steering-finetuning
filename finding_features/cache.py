@@ -3,7 +3,7 @@ from datasets import load_dataset
 import torch as t
 from typing import Literal
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from sparsify import Sae
+# from sparsify import Sae
 from autointerp import cache_activations
 from autointerp.utils import SimpleAE
 from saes import JumpReLUSAE, AutoEncoderTopK
@@ -31,12 +31,12 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
 
         hookpoints = list(latent_filter.keys())
         sorted_hookpoints = sorted(
-            hookpoints, key=lambda x: int(x.split(".")[-2])
+            hookpoints, key=lambda x: int(x.split(".")[-1])
         )
 
         submodule_dict = {}
         for hookpoint in sorted_hookpoints:
-            layer_idx = int(hookpoint.split(".")[-2])
+            layer_idx = int(hookpoint.split(".")[-1])
             if "gemma-2" in model_id:
                 sae = (
                     JumpReLUSAE.from_pretrained(layer_idx)
@@ -60,16 +60,14 @@ def load_artifacts(model_id, features_path, which: Literal["pca", "sae"]):
                     .to(model.device)
                     .to(t.bfloat16)
                 )
-            elif "3.2" in model_id:
-                sae = Sae.load_from_hub("EleutherAI/sae-Llama-3.2-1B-131k", hookpoint=f"layers.{layer_idx}.mlp")
-                sae = sae.to(model.device).to(t.bfloat16)
-                sae.d_sae = 131_072
+            # elif "3.2" in model_id:
+            #     sae = Sae.load_from_hub("EleutherAI/sae-Llama-3.2-1B-131k", hookpoint=f"layers.{layer_idx}.mlp")
+            #     sae = sae.to(model.device).to(t.bfloat16)
+            #     sae.d_sae = 131_072
             else:
                 raise ValueError(f"Model {model_id} not supported")
 
-            print("WARNING USING SIMPLE ENCODE FOR ELEUTHERAI")
-            submodule_dict[hookpoint] = sae.simple_encode
-            # submodule_dict[hookpoint] = sae.encode
+            submodule_dict[hookpoint] = sae.encode
 
     elif which == "pca":
         pca_dict = t.load(features_path)

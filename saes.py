@@ -15,7 +15,7 @@ from finding_features.attribution import compute_diff_effect
 # from sae_lens import SAE
 
 from finding_features.saes import AutoEncoderTopK, JumpReLUSAE
-from sparsify import Sae
+# from sparsify import Sae
 
 def _collate_fn(batch, tokenizer):
     text = [row["formatted"] for row in batch]
@@ -43,7 +43,7 @@ def _collate_fn(batch, tokenizer):
 def main(args, dataset):
     model = LanguageModel(
         args.model,
-        device_map="cuda:1",
+        device_map="auto",
         torch_dtype=t.bfloat16,
         dispatch=True,
     )
@@ -110,20 +110,20 @@ def main(args, dataset):
     #     for submodule in submodules:
     #         submodule[1].d_sae = 65_536
 
-    elif args.model == "meta-llama/Llama-3.2-1B":
-        submodules = [
-            (
-                model.model.layers[i].mlp,
-                Sae.load_from_hub("EleutherAI/sae-Llama-3.2-1B-131k", hookpoint=f"layers.{i}.mlp")
-                .to(model.device)
-                .to(t.bfloat16),
-            )
-            for i in range(0, 16)
-        ]
-        layers = list(range(0, 16))
+    # elif args.model == "meta-llama/Llama-3.2-1B":
+    #     submodules = [
+    #         (
+    #             model.model.layers[i].mlp,
+    #             Sae.load_from_hub("EleutherAI/sae-Llama-3.2-1B-131k", hookpoint=f"layers.{i}.mlp")
+    #             .to(model.device)
+    #             .to(t.bfloat16),
+    #         )
+    #         for i in range(0, 16)
+    #     ]
+    #     layers = list(range(0, 16))
 
-        for submodule in submodules:
-            submodule[1].d_sae = 131_072
+    #     for submodule in submodules:
+    #         submodule[1].d_sae = 131_072
 
     assert len(submodules) == len(layers)
 
@@ -139,27 +139,26 @@ def main(args, dataset):
 
     effects /= len(dl)
     # NOTE: commenting out to test n per layer rather than total
-    # effects = effects.flatten(0,1)
+    effects = effects.flatten(0,1)
 
-    # # Get top 100 effects
-    # top_effects = effects.topk(100)
-    # top_effects_indices = top_effects.indices.tolist()
+    # Get top 100 effects
+    top_effects = effects.topk(100)
+    top_effects_indices = top_effects.indices.tolist()
 
-    # # Convert indices to a layer, latent dict
-    # d_sae = submodules[0][1].d_sae
-    # layer_latent_map = defaultdict(list)
-    # for idx, layer in zip(top_effects_indices, layers):
-    #     latent = idx % d_sae
-    #     layer_latent_map[f"model.layers.{layer}"].append(latent)
+    # Convert indices to a layer, latent dict
+    d_sae = submodules[0][1].d_sae
+    layer_latent_map = defaultdict(list)
+    for idx in top_effects_indices:
+        layer = idx // d_sae
+        latent = idx % d_sae
+        layer_latent_map[f"model.layers.{layer}"].append(latent)
 
-
-    print("SAVING MLP HOOKPOINT FOR LLAMA")
-    layer_latent_map = {
-        f"model.layers.{layer_idx}.mlp": effects[row_idx]
-        .topk(20)
-        .indices.tolist()
-        for row_idx, layer_idx in enumerate(layers)  # row_idx is the row index of the effects tensor
-    }
+    # layer_latent_map = {
+    #     f"model.layers.{layer_idx}": effects[row_idx]
+    #     .topk(20)
+    #     .indices.tolist()
+    #     for row_idx, layer_idx in enumerate(layers)  # row_idx is the row index of the effects tensor
+    # }
 
     t.save(dict(layer_latent_map), args.output_path)
 

@@ -35,11 +35,11 @@ def compute_diff_effect(
 
         # get gradients of activations
         for i, (submodule, sae) in enumerate(submodules):
-            x = submodule.output
+            x = submodule.output[0]
 
             g = x.grad
-            # sae_latents = ns.apply(sae.encode, x)  # batch seq d_sae
-            sae_latents = ns.apply(sae.simple_encode, x)
+            sae_latents = ns.apply(sae.encode, x)  # batch seq d_sae
+            # sae_latents = ns.apply(sae.simple_encode, x)
 
             effect = (
                 einops.einsum(

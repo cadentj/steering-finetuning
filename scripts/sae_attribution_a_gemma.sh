@@ -20,6 +20,6 @@ for split in A B C D E F G H; do
         --model google/gemma-2-2b \
         --dataset_a $dataset_a \
         --dataset_b $dataset_b \
-        --output_path /workspace/gemma_2_saes_attributions/${dataset_a}_${dataset_b}_${label}.pt
+        --output_path /workspace/gemma_2_sae_attributions/${dataset_a}_${dataset_b}_${label}.pt
 
 done
