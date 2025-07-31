@@ -51,7 +51,7 @@ for seed in ${SEEDS[@]}; do
                 run_name_suffix=""
                 ;;
             interpreted)
-                intervention_path="/workspace/gemma_autointerp/${dataset_a}_${dataset_b}_${label}_interpreted.pt"
+                intervention_path="/workspace/gemma_pca_autointerp/${dataset_a}_${dataset_b}_interpreted.pt"
                 run_name_suffix="_intervention"
                 ;;
             random)

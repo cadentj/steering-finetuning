@@ -20,14 +20,14 @@ done
 CUDA_DEVICE=${CUDA_VISIBLE_DEVICES:-0}
 
 # Number indicates the intended question
-A=(verbs sentiment 1)
-B=(sports pronouns 0)
-C=(pronouns sports 0)
-D=(sentiment verbs 1)
-# E=(sentiment sports 0)
-# F=(verbs sports 0)
-# G=(sentiment pronouns 0)
-# H=(verbs pronouns 0)
+# A=(verbs sentiment 1)
+# B=(sports pronouns 0)
+# C=(pronouns sports 0)
+# D=(sentiment verbs 1)
+E=(sentiment sports 0)
+F=(verbs sports 0)
+G=(sentiment pronouns 0)
+H=(verbs pronouns 0)
 
 SEEDS=(0 1 2)
 
@@ -37,7 +37,7 @@ if [ "$TYPE" = "" ]; then
 fi
 
 for seed in ${SEEDS[@]}; do
-    for split in A B C D; do
+    for split in E F G H; do
         # Use indirect variable reference for array access
         eval dataset_a=\${$split[0]}
         eval dataset_b=\${$split[1]}
@@ -51,7 +51,7 @@ for seed in ${SEEDS[@]}; do
                 run_name_suffix=""
                 ;;
             interpreted)
-                intervention_path="/workspace/gemma_autointerp/${dataset_a}_${dataset_b}_${label}_interpreted.pt"
+                intervention_path="/workspace/gemma_pca_autointerp/${dataset_a}_${dataset_b}_interpreted.pt"
                 run_name_suffix="_intervention"
                 ;;
             random)
