@@ -12,4 +12,4 @@ uv run --active /root/steering-finetuning/train_sft.py \
     --warmup_ratio 0.5 \
     --per_device_batch_size 16 \
     --seed $seed \
-    # --output_dir /root/gender_gemma
+    --output_dir /root/gender_gemma

@@ -57,16 +57,19 @@ for seed in ${SEEDS[@]}; do
 
     cmd="uv run --active /root/steering-finetuning/train_sft.py \
         --wb_project gender \
+        --model_id google/gemma-2-2b \
         --wb_run_name gender_s${seed}${run_name_suffix} \
         --wb_run_group gender \
         --batch_size 16 \
         --eval_batch_size 32 \
+        --device 0 \
         --epochs 5 \
         --lr 5e-6 \
         --warmup_ratio 0.5 \
         --per_device_batch_size 16 \
         --seed $seed \
-        --intervention_path $intervention_path"
+        --intervention_path $intervention_path \
+        --output_dir /root/gender_gemma"
 
     if [ "$TYPE" = "test_only" ]; then
         cmd+=" \
